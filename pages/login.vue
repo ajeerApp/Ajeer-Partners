@@ -49,7 +49,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
             class=""
           />
           <h4 cols="6" class="text-h4 mb-1 d-flex align-center justify-center">
-           Ajeer in partner with
+            in partner with
           </h4>
              </VRow>
          
@@ -90,10 +90,22 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
         class="mt-12 mt-sm-0 pa-2"
       >
         <VCardText>
-          <VNodeRenderer
+          <VRow class="d-flex justify-center">
+            <VCol cols="col-3">
+              <VNodeRenderer
             :nodes="themeConfig.app.logo"
             class="mb-2"
           />
+            </VCol>
+            <VCol cols="col-3" class="d-block d-md-none">
+                <VImg
+                :style="{ 'height': '150px' }"
+              :src="partner"
+              class="auth-illustration mb-2"
+            />
+            </VCol>
+          </VRow>
+        
           <h4 class="text-h4 mb-1">
             Welcome to <span class="text-capitalize">{{ themeConfig.app.title }}</span>! 👋🏻
           </h4>
