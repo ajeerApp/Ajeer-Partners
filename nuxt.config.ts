@@ -6,8 +6,8 @@ import { fileURLToPath } from 'node:url'
 export default defineNuxtConfig({
   app: {
     head: {
-      titleTemplate: '%s - NuxtJS Admin Template',
-      title: 'Vuexy',
+      titleTemplate: '',
+      title: 'Ajeer Partners',
 
       link: [{
         rel: 'icon',
@@ -40,7 +40,7 @@ export default defineNuxtConfig({
     }],
   },
 
-  plugins: ['@/plugins/vuetify/index.js', '@/plugins/iconify/index.js'],
+  plugins: ['@/plugins/vuetify/index.js', '@/plugins/iconify/index.js', '@/plugins/vue-google-maps',],
 
   imports: {
     dirs: ['./@core/utils', './@core/composable/', './plugins/*/composables/*'],
@@ -128,6 +128,17 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify'],
   },
+  runtimeConfig: {
+    // Private keys are only available on the server
+    AUTH_ORIGIN: process.env.AUTH_ORIGIN,
 
-  modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt'],
+
+    // Public keys that are exposed to the client.
+    public: {
+      googleMapKey: process.env.VUE_APP_GOOGLE_MAP_API_KEY
+    },
+  },
+
+  modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt',
+  ],
 })

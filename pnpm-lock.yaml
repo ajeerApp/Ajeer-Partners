@@ -79,6 +79,9 @@ dependencies:
   next-auth:
     specifier: 4.21.1
     version: 4.21.1(next@13.5.6)(react-dom@18.2.0)(react@18.2.0)
+  nuxt-gmaps:
+    specifier: ^1.2.10
+    version: 1.2.10
   ofetch:
     specifier: ^1.3.3
     version: 1.3.3
@@ -121,6 +124,9 @@ dependencies:
   vue3-apexcharts:
     specifier: ^1.4.4
     version: 1.4.4(apexcharts@3.44.0)(vue@3.3.8)
+  vue3-google-map:
+    specifier: ^0.18.0
+    version: 0.18.0(vue@3.3.8)
   vue3-perfect-scrollbar:
     specifier: ^1.6.1
     version: 1.6.1(postcss@8.4.31)
@@ -1240,6 +1246,19 @@ packages:
       '@fullcalendar/core': 6.1.9
       vue: 3.3.8(typescript@5.2.2)
     dev: true
+
+  /@googlemaps/js-api-loader@1.16.2:
+    resolution: {integrity: sha512-psGw5u0QM6humao48Hn4lrChOM2/rA43ZCm3tKK9qQsEj1/VzqkCqnvGfEOshDbBQflydfaRovbKwZMF4AyqbA==}
+    dependencies:
+      fast-deep-equal: 3.1.3
+    dev: false
+
+  /@googlemaps/markerclusterer@2.5.1:
+    resolution: {integrity: sha512-TLASLyWPoJiTdbuPtqIzQS8t/+JIvd+whoNkeSxWpP2eIoTscgsWt72Is3Cu5I68GuX3qn+oUSxqagFYc1O+wg==}
+    dependencies:
+      fast-deep-equal: 3.1.3
+      supercluster: 8.0.1
+    dev: false
 
   /@humanwhocodes/config-array@0.11.13:
     resolution: {integrity: sha512-JSBDMiDKSzQVngfRjOdFXgFfklaXI4K9nLF49Auh21lmBWRLIK3+xTErTWD4KU54pb6coM6ESE7Awz/FNU3zgQ==}
@@ -4884,6 +4903,10 @@ packages:
       is-date-object: 1.0.5
       is-symbol: 1.0.4
 
+  /es6-promise@4.2.8:
+    resolution: {integrity: sha512-HJDGx5daxeIvxdBxvG2cb9g4tEvwIk3i8+nhX0yGrYmZUzbkdg8QbDevheDB8gd0//uPj4c1EQua8Q+MViT0/w==}
+    dev: false
+
   /esbuild@0.18.20:
     resolution: {integrity: sha512-ceqxoedUrcayh7Y7ZX6NdbbDzGROiyVBgC4PriJThBKSVPWnnFHZAkfI1lJT8QFkOwH4qOS2SJkS4wvpGl8BpA==}
     engines: {node: '>=12'}
@@ -5980,6 +6003,13 @@ packages:
   /globjoin@0.1.4:
     resolution: {integrity: sha512-xYfnw62CKG8nLkZBfWbhWwDw02CHty86jfPcc2cr3ZfeuK9ysoVPPEUxf21bAD/rWAgk52SuBrLJlefNy8mvFg==}
     dev: true
+
+  /google-maps-api-loader@1.1.1:
+    resolution: {integrity: sha512-+bxumYl6WCxKDjygLFF2FxrNyKIB0QgWKFb+EZ6F5wt/MoU2cm/8se9uQ0o1nY7389F2qe6ocdpSFn1bKQAD5w==}
+    deprecated: This package is deprecated, use @googlemaps/js-api-loader instead
+    dependencies:
+      es6-promise: 4.2.8
+    dev: false
 
   /gopd@1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
@@ -7562,6 +7592,10 @@ packages:
       - supports-color
     dev: true
 
+  /node-js-marker-clusterer@1.0.0:
+    resolution: {integrity: sha512-FmydyV+HaK6eTqUwsrrVIs3oh7v0ZaXp/tB5/E9vFCUCIfb1odYu8A1DB2CqY1nV/t0Qo9qlMam2dBIlZDzMLA==}
+    dev: false
+
   /node-releases@2.0.13:
     resolution: {integrity: sha512-uYr7J37ae/ORWdZeQ1xxMJe3NtdmqMC/JZK+geofDrkLUApKRHPd18/TxtBOJ4A0/+uUIliorNrfYV6s1b02eQ==}
 
@@ -7720,6 +7754,13 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
+
+  /nuxt-gmaps@1.2.10:
+    resolution: {integrity: sha512-IeYXeR6cJpVfSDa0+IYht7r7IZNCL5uK6oWH8e1JY95+NbJBBH6Nas9BmR+9ZIkCw6aFrUwXEkOFgg8RefjlJw==}
+    dependencies:
+      google-maps-api-loader: 1.1.1
+      node-js-marker-clusterer: 1.0.0
+    dev: false
 
   /nuxt@3.8.1(eslint@8.53.0)(sass@1.69.5)(stylelint@15.11.0)(typescript@5.2.2)(vite@4.5.0):
     resolution: {integrity: sha512-RSGO56Gv0x2f6AXWw4o4GoBaVdsD0qkPCjrX7Ud/jzH3cRJoyYMPuq/9AOLvf2o1ecZWl39j5elqJ4QHmggyOA==}
@@ -11129,6 +11170,18 @@ packages:
       vue: '> 3.0.0'
     dependencies:
       apexcharts: 3.44.0
+      vue: 3.3.8(typescript@5.2.2)
+    dev: false
+
+  /vue3-google-map@0.18.0(vue@3.3.8):
+    resolution: {integrity: sha512-dhDlXK5XxKxH3Mj6n6C7y99M5LRwPDHlgGWgfLkmzVMpwlxBhaSxDhSTaduAFUjeHVusEfYdPxJSSP7yPJr8sg==}
+    engines: {node: '>=16.11.0'}
+    peerDependencies:
+      vue: ^3
+    dependencies:
+      '@googlemaps/js-api-loader': 1.16.2
+      '@googlemaps/markerclusterer': 2.5.1
+      fast-deep-equal: 3.1.3
       vue: 3.3.8(typescript@5.2.2)
     dev: false
 

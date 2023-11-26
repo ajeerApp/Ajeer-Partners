@@ -88,14 +88,14 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
         >
           <VNodeRenderer :nodes="layoutConfig.app.logo" />
 
-          <Transition name="vertical-nav-app-title">
+          <!-- <Transition name="vertical-nav-app-title">
             <h1
               v-show="!hideTitleAndIcon"
               class="app-logo-title leading-normal"
             >
               {{ layoutConfig.app.title }}
             </h1>
-          </Transition>
+          </Transition> -->
         </NuxtLink>
         <!-- 👉 Vertical nav actions -->
         <!-- Show toggle collapsible in >md and close button in <md -->
