@@ -4,31 +4,31 @@
     <span class="d-flex align-center">
       &copy;
       {{ new Date().getFullYear() }}
-      Made With
+      {{ $t("Made With") }}
       <VIcon
         icon="tabler-heart"
         color="error"
         size="1.25rem"
         class="mx-1"
       />
-      By <a
+      {{ $t("By") }} <a
         href="https://www.iajeer.com/"
         target="_blank"
         rel="noopener noreferrer"
         class="text-primary ms-1"
-      >Ajeer</a>
+      >{{ $t("Ajeer") }}</a>
     </span>
     <!-- 👉 Footer: right content -->
     <span class="d-md-flex gap-x-4 text-primary d-none">
       <a
         href="https://www.iajeer.com/"
         target="noopener noreferrer"
-      >License</a>
+      >{{ $t("License") }}</a>
     
       <a
         href="https://www.iajeer.com/"
         target="noopener noreferrer"
-      >Documentation</a>
+      >{{ "Documentation" }}</a>
     </span>
   </div>
 </template>

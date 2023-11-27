@@ -49,7 +49,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
             class=""
           />
           <h4 cols="6" class="text-h4 mb-1 d-flex align-center justify-center">
-            in partner with
+            {{ $t('in partner with') }}
           </h4>
              </VRow>
          
@@ -107,10 +107,10 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
           </VRow>
         
           <h4 class="text-h4 mb-1">
-            Welcome to <span class="text-capitalize">{{ themeConfig.app.title }}</span>! 👋🏻
+            {{ $t("Welcome to") }} <span class="text-capitalize">{{themeConfig.app.title}}</span>! 👋🏻
           </h4>
           <p class="mb-0">
-            Please enter your mobile number
+            {{ $t("Please enter your mobile number") }}
           </p>
         </VCardText>
         <VCardText>
@@ -121,7 +121,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
                 <AppTextField
                   v-model="form.mobile"
                   autofocus
-                  label="Mobile"
+                  :label="$t('Mobile')"
                   type="number"
                   placeholder="e.g 5xxxxxxxx"
                 />
@@ -134,7 +134,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
                   block
                   type="submit"
                 >
-                  Check
+                  {{ $t("Check") }}
                 </VBtn>
               </VCol>
 
@@ -143,7 +143,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
                 cols="12"
                 class="text-center text-base"
               >
-                <span>Ajeer building a better tomorrow.</span>
+                <span>{{ $t("Ajeer building a better tomorrow.") }}</span>
               </VCol>
 
           

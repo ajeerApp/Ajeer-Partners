@@ -4,7 +4,9 @@ import { fileURLToPath } from 'node:url'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  
   app: {
+    
     head: {
       titleTemplate: '',
       title: 'Ajeer Partners',
@@ -40,11 +42,11 @@ export default defineNuxtConfig({
     }],
   },
 
-  plugins: ['@/plugins/vuetify/index.js', '@/plugins/iconify/index.js', '@/plugins/vue-google-maps',],
+  plugins: ['@/plugins/vuetify/index.js', '@/plugins/iconify/index.js', '@/plugins/vue-google-maps', '@/plugins/i18n/index.js'],
 
   imports: {
     dirs: ['./@core/utils', './@core/composable/', './plugins/*/composables/*'],
-    presets: [],
+    presets: ['vue-i18n'],
   },
 
   hooks: {},
@@ -121,7 +123,13 @@ export default defineNuxtConfig({
           configFile: 'assets/styles/variables/_vuetify.scss',
         },
       }),
-      null,
+      VueI18nPlugin({
+        runtimeOnly: true,
+        compositionOnly: true, ssr: true,
+        include: [
+          fileURLToPath(new URL('./plugins/i18n/locales/**', import.meta.url)),
+        ],
+      }),
     ],
   },
 
@@ -141,4 +149,5 @@ export default defineNuxtConfig({
 
   modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt',
   ],
+  
 })

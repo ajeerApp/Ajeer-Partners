@@ -15,16 +15,11 @@ export const { themeConfig, layoutConfig } = defineThemeConfig({
         contentLayoutNav: AppContentLayoutNav.Vertical,
         overlayNavFromBreakpoint: breakpointsVuetify.md + 16,
         i18n: {
-            enable: false,
+            enable: true,
             defaultLocale: 'en',
             langConfig: [{
                     label: 'English',
                     i18nLang: 'en',
-                    isRTL: false,
-                },
-                {
-                    label: 'French',
-                    i18nLang: 'fr',
                     isRTL: false,
                 },
                 {
