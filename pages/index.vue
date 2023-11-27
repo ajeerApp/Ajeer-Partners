@@ -2,25 +2,27 @@
 import fawriIconImage from '@images/icons/order-types/fawri.svg'
 import scheduledIconImage from '@images/icons/order-types/scheduled.svg'
 import { GoogleMap, Marker } from "vue3-google-map";
+import {useI18n} from 'vue-i18n'
 
+const i18n =useI18n()
 const fawriIcon = useGenerateImageVariant(fawriIconImage)
 const scheduledIcon = useGenerateImageVariant(scheduledIconImage)
-const center = { lat: 24.7136, lng:46.6753};
+const center = { lat: 24.7136, lng: 46.6753 };
 const iconsSteps = [
   {
-    title: 'Order Details',
+    title: i18n.t('Order Details'),
     icon: 'custom-address',
   },
   {
-    title: 'Choose Date',
+    title:i18n.t("Choose Date"),
     icon: 'custom-wizard-social-link',
   },
   {
-    title: 'Address',
+    title: i18n.t('Address'),
     icon: 'custom-wizard-address',
   },
   {
-    title: 'Review & Submit',
+    title: i18n.t('Review & Submit'),
     icon: 'custom-wizard-submit',
   },
 
@@ -48,7 +50,7 @@ const formData = ref({
   facebook: 'https://facebook.com/abc',
   googlePlus: 'https://plus.google.com/abc',
   linkedIn: 'https://linkedin.com/abc',
-  date:null
+  date: null
 })
 
 const onSubmit = () => {
@@ -71,16 +73,16 @@ const onSubmit = () => {
               <VRow>
                 <VCol cols="12">
                   <h6 class="text-h6 font-weight-medium">
-                    Order Details
+                    {{ $t("Order Details") }}
                   </h6>
                   <p class="mb-0">
-                    Enter your Order Details
+                   {{ $t("Enter your Order Details") }}
                   </p>
                 </VCol>
 
 
                 <VCol cols="12" md="12">
-                  <AppSelect v-model="formData.order" label="Order" placeholder="Select Order" :items="['12345']" />
+                  <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="['12345']" />
                 </VCol>
 
 
@@ -91,22 +93,23 @@ const onSubmit = () => {
               <VRow>
                 <VCol cols="12">
                   <h6 class="text-h6 font-weight-medium">
-                    Choose Date
+                    {{ $t("Choose Date") }}
                   </h6>
                   <p class="mb-0">
-                    Setup Date
+                    {{ $t("Setup Date") }}
                   </p>
                 </VCol>
                 <VCol cols="12">
                   <VRow>
-                    <VCol cols="6" >
-                      <VRadioGroup class="time-bar" :class="[isFawri?'active-style':'']" for="on-demand" @click="isFawri=true">
+                    <VCol cols="6">
+                      <VRadioGroup class="time-bar" :class="[isFawri ? 'active-style' : '']" for="on-demand"
+                        @click="isFawri = true">
                         <VRow>
                           <VCol cols="2">
                             <img class="img-bar" :src="fawriIcon" alt="fawri">
                           </VCol>
                           <VCol>
-                            <span class="text-middle">Fawri</span>
+                            <span class="text-middle">{{ $t("Fawri") }}</span>
                           </VCol>
                         </VRow>
                         <span class="filter">
@@ -117,14 +120,15 @@ const onSubmit = () => {
 
 
                     <VCol cols="6">
-                      <VRadioGroup class="time-bar" for="calendar" @click="isFawri=false" :class="[!isFawri?'active-style':'']">
+                      <VRadioGroup class="time-bar" for="calendar" @click="isFawri = false"
+                        :class="[!isFawri ? 'active-style' : '']">
                         <span class="filter">
                           <VRow>
                             <VCol cols="2">
                               <img class="img-bar" :src="scheduledIcon" alt="home.scheduled">
                             </VCol>
                             <VCol>
-                              <span class="text-middle">Calender </span>
+                              <span class="text-middle">{{ $t("Calender") }} </span>
                               <!-- <span class="text-middle" ></span> -->
                             </VCol>
                           </VRow>
@@ -135,39 +139,29 @@ const onSubmit = () => {
                 </VCol>
               </VRow>
               <VRow class="d-flex justify-center">
-                <AppDateTimePicker
-                  v-model="formData.date"
-                  placeholder="Select Date and time"
-                  :config="{ enableTime: true, dateFormat: 'Y-m-d H:i',inline:true }"
-                 v-if="!isFawri"
-                      />
-                </VRow>
+                <AppDateTimePicker v-model="formData.date" :placeholder="$t('Select Date and time')"
+                  :config="{ enableTime: true, dateFormat: 'Y-m-d H:i', inline: true }" v-if="!isFawri" />
+              </VRow>
             </VWindowItem>
 
             <VWindowItem>
               <VRow>
                 <VCol cols="12">
                   <h6 class="text-h6 font-weight-medium">
-                    Address
+                    {{ $t("Address") }}
                   </h6>
                   <p class="mb-0">
-                   Enter or Choose Your Address.
+                    {{ $t("Enter or Choose Your Address.") }}
                   </p>
                 </VCol>
-                <VCol
-                cols="12"
-                md="12"
-              >
-                <AppTextField
-                  v-model="formData.location"
-                  placeholder="Location"
-                  label="Location"
-                />
-              </VCol>
                 <VCol cols="12" md="12">
-                  <GoogleMap api-key="AIzaSyDIfHvUwp5JuGnAO6LP7yu_iK0ntHuH8to" style="width: 100%; height: 500px" :center="center" :zoom="15">
-    <Marker :options="{ position: center }" />
-  </GoogleMap>
+                  <AppTextField v-model="formData.location" :placeholder="$t('Location')" :label="$t('Location')" />
+                </VCol>
+                <VCol cols="12" md="12">
+                  <GoogleMap api-key="AIzaSyDIfHvUwp5JuGnAO6LP7yu_iK0ntHuH8to" style="width: 100%; height: 500px"
+                    :center="center" :zoom="15">
+                    <Marker :options="{ position: center }" />
+                  </GoogleMap>
                 </VCol>
 
               </VRow>
@@ -180,16 +174,16 @@ const onSubmit = () => {
           <div class="d-flex flex-wrap gap-4 justify-sm-space-between justify-center mt-8">
             <VBtn color="secondary" variant="tonal" :disabled="currentStep === 0" @click="currentStep--">
               <VIcon icon="tabler-arrow-left" start class="flip-in-rtl" />
-              Previous
+              {{ $t("Previous") }}
             </VBtn>
 
             <VBtn v-if="iconsSteps.length - 1 === currentStep" color="success" append-icon="tabler-check"
               @click="onSubmit">
-              Place Order
+              {{ $t("Place Order") }}
             </VBtn>
 
             <VBtn v-else @click="currentStep++">
-              Next
+              {{ $t("Next") }}
 
               <VIcon icon="tabler-arrow-right" end class="flip-in-rtl" />
             </VBtn>
