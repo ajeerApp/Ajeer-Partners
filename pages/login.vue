@@ -1,49 +1,30 @@
-<!-- ❗Errors in the form are set on line 60 -->
 <script setup>
 const { signIn, data: sessionData } = useAuth()
 
-
-
-
-import { VForm } from 'vuetify/components/VForm'
 import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
 import authV2LoginIllustrationBorderedLight from '@images/pages/auth-v2-login-illustration-bordered-light.png'
 import authV2LoginIllustrationDark from '@images/pages/auth-v2-login-illustration-dark.png'
-import authV2LoginIllustrationLight from '@images/pages/auth-v2-login-illustration-light.png'
+import saudiCermics from '@images/pages/saudi-ceramics.png'
+import ajeerLogo from '@images/pages/ajeer-logo-blue.png'
 import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 
-const authThemeImg = useGenerateImageVariant(authV2LoginIllustrationLight, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
-const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 
 definePageMeta({
   layout: 'blank',
   unauthenticatedOnly: true,
 
 })
-
-const isPasswordVisible = ref(false)
-const route = useRoute()
-
-const ability = useAbility()
-
-const errors = ref({
-  email: undefined,
-  password: undefined,
-})
-
 const refVForm = ref()
 
-const credentials = ref({
-  email: 'admin@demo.com',
-  password: 'admin',
-})
 
-const rememberMe = ref(false)
+const credentials = ref({
+  mobile: 555555555,
+})
 
 async function login() {
   const response = await signIn('credentials', {
@@ -58,6 +39,7 @@ async function login() {
     const apiError = JSON.parse(apiStringifiedError)
 
     errors.value = apiError.data
+    console.log("apiError",apiError)
 
     // If err => Don't execute further
     return
@@ -85,6 +67,12 @@ const onSubmit = () => {
       login()
   })
 }
+const isPasswordVisible = ref(false)
+// const partner = useGenerateImageVariant(saudiCermics, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
+const partner = useGenerateImageVariant(saudiCermics)
+const ajeerLogoBg = useGenerateImageVariant(ajeerLogo)
+
+const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 </script>
 
 <template>
@@ -93,143 +81,119 @@ const onSubmit = () => {
     class="auth-wrapper bg-surface"
   >
     <VCol
-      lg="8"
-      class="d-none d-lg-flex"
+      md="8"
+      class="d-none d-md-flex"
     >
-      <div class="position-relative bg-background rounded-lg w-100 ma-8 me-0">
+      <div class="position-relative bg-background rounded-lg w-100 me-0">
         <div class="d-flex align-center justify-center w-100 h-100">
-          <VImg
-            max-width="505"
-            :src="authThemeImg"
-            class="auth-illustration mt-16 mb-2"
+        <VRow class="d-flex justify-center">
+          <VCol cols="12">
+            <VCardText>
+             <VRow  class="d-flex justify-center">
+              <VNodeRenderer cols="6"
+            :nodes="themeConfig.app.logo"
+            class=""
           />
+          <h4 cols="6" class="text-h4 mb-1 d-flex align-center justify-center">
+            {{ $t('in partner with') }}
+          </h4>
+             </VRow>
+         
+        </VCardText>
+            </VCol>
+          <VCol cols="3">
+            <VImg
+            max-width="300"
+            :src="partner"
+            class="auth-illustration mb-2"
+          />
+          </VCol>
+          <!-- <VCol cols="3" >
+            <VImg
+            max-width="300"
+            :src="ajeerLogoBg"
+            class="auth-illustration mb-2"
+          />
+          </VCol> -->
+        </VRow>
         </div>
 
         <VImg
-          :src="authThemeMask"
           class="auth-footer-mask"
+          :src="authThemeMask"
         />
       </div>
     </VCol>
 
     <VCol
       cols="12"
-      lg="4"
+      md="4"
       class="auth-card-v2 d-flex align-center justify-center"
     >
       <VCard
         flat
         :max-width="500"
-        class="mt-12 mt-sm-0 pa-4"
+        class="mt-12 mt-sm-0 pa-2"
       >
         <VCardText>
-          <VNodeRenderer
+          <VRow class="d-flex justify-center">
+            <VCol cols="col-3">
+              <VNodeRenderer
             :nodes="themeConfig.app.logo"
-            class="mb-6"
+            class="mb-2"
           />
-
+            </VCol>
+            <VCol cols="col-3" class="d-block d-md-none">
+                <VImg
+                :style="{ 'height': '150px' }"
+              :src="partner"
+              class="auth-illustration mb-2"
+            />
+            </VCol>
+          </VRow>
+        
           <h4 class="text-h4 mb-1">
-            Welcome to <span class="text-capitalize"> {{ themeConfig.app.title }} </span>! 👋🏻
+            {{ $t("Welcome to") }} <span class="text-capitalize">{{themeConfig.app.title}}</span>! 👋🏻
           </h4>
           <p class="mb-0">
-            Please sign-in to your account and start the adventure
+            {{ $t("Please enter your mobile number") }}
           </p>
         </VCardText>
         <VCardText>
-          <VAlert
-            color="primary"
-            variant="tonal"
-          >
-            <p class="text-sm mb-2">
-              Admin Email: <strong>admin@demo.com</strong> / Pass: <strong>admin</strong>
-            </p>
-            <p class="text-sm mb-0">
-              Client Email: <strong>client@demo.com</strong> / Pass: <strong>client</strong>
-            </p>
-          </VAlert>
-        </VCardText>
-        <VCardText>
-          <VForm
-            ref="refVForm"
-            @submit.prevent="onSubmit"
-          >
+          <VForm  ref="refVForm"
+            @submit.prevent="onSubmit">
             <VRow>
-              <!-- email -->
+              <!-- mobile -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="credentials.email"
-                  label="Email"
-                  placeholder="johndoe@email.com"
-                  type="email"
+                  v-model="credentials.mobile"
                   autofocus
-                  :rules="[requiredValidator, emailValidator]"
-                  :error-messages="errors.email"
+                  :label="$t('Mobile')"
+                  type="number"
+                  placeholder="e.g 5xxxxxxxx"
                 />
               </VCol>
 
               <!-- password -->
               <VCol cols="12">
-                <AppTextField
-                  v-model="credentials.password"
-                  label="Password"
-                  placeholder="············"
-                  :rules="[requiredValidator]"
-                  :type="isPasswordVisible ? 'text' : 'password'"
-                  :error-messages="errors.password"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
-                  @click:append-inner="isPasswordVisible = !isPasswordVisible"
-                />
-
-                <div class="d-flex align-center flex-wrap justify-space-between mt-1 mb-4">
-                  <VCheckbox
-                    v-model="rememberMe"
-                    label="Remember me"
-                  />
-                  <NuxtLink
-                    class="text-primary ms-2 mb-1"
-                  
-                  >
-                    Forgot Password?
-                  </NuxtLink>
-                </div>
 
                 <VBtn
                   block
                   type="submit"
                 >
-                  Login
+                  {{ $t("Check") }}
                 </VBtn>
               </VCol>
 
               <!-- create account -->
               <VCol
                 cols="12"
-                class="text-center"
+                class="text-center text-base"
               >
-                <span>New on our platform?</span>
-                <NuxtLink
-                  class="text-primary ms-2"
-            
-                >
-                  Create an account
-                </NuxtLink>
-              </VCol>
-              <VCol
-                cols="12"
-                class="d-flex align-center"
-              >
-                <VDivider />
-                <span class="mx-4">or</span>
-                <VDivider />
+                <span>{{ $t("Ajeer building a better tomorrow.") }}</span>
               </VCol>
 
-              <!-- auth providers -->
-              <VCol
-                cols="12"
-                class="text-center"
-              >
-                <AuthProvider />
-              </VCol>
+          
             </VRow>
           </VForm>
         </VCardText>
