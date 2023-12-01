@@ -1,4 +1,6 @@
 <script setup>
+const { signIn, data: sessionData } = useAuth()
+
 import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
@@ -11,16 +13,60 @@ import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 
+
 definePageMeta({
-  layout: 'blank', 
+  layout: 'blank',
+  unauthenticatedOnly: true,
+
+})
+const refVForm = ref()
+
+
+const credentials = ref({
+  mobile: 555555555,
 })
 
-const form = ref({
-  mobile: '',
-  password: '',
-  remember: false,
-})
+async function login() {
+  const response = await signIn('credentials', {
+    callbackUrl: '/',
+    redirect: false,
+    ...credentials.value,
+  })
 
+  // If error is not null => Error is occurred
+  if (response && response.error) {
+    const apiStringifiedError = response.error
+    const apiError = JSON.parse(apiStringifiedError)
+
+    errors.value = apiError.data
+    console.log("apiError",apiError)
+
+    // If err => Don't execute further
+    return
+  }
+
+  // Reset error on successful login
+  errors.value = {}
+
+  // Update user abilities
+  const { user } = sessionData.value
+
+  useCookie('userData').value = user
+
+  // Save user abilities in cookie so we can retrieve it back on refresh
+  useCookie('userAbilityRules').value = user.abilityRules
+
+  ability.update(user.abilityRules ?? [])
+
+  navigateTo(route.query.to ? String(route.query.to) : '/', { replace: true })
+}
+
+const onSubmit = () => {
+  refVForm.value?.validate().then(({ valid: isValid }) => {
+    if (isValid)
+      login()
+  })
+}
 const isPasswordVisible = ref(false)
 // const partner = useGenerateImageVariant(saudiCermics, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 const partner = useGenerateImageVariant(saudiCermics)
@@ -114,12 +160,13 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
           </p>
         </VCardText>
         <VCardText>
-          <VForm @submit.prevent="() => { }">
+          <VForm  ref="refVForm"
+            @submit.prevent="onSubmit">
             <VRow>
               <!-- mobile -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="form.mobile"
+                  v-model="credentials.mobile"
                   autofocus
                   :label="$t('Mobile')"
                   type="number"
