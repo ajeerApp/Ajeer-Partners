@@ -4,7 +4,13 @@ import { fileURLToPath } from 'node:url'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  
+  auth: {
+    globalAppMiddleware: false,
+
+    provider: {
+        type: 'authjs'
+    }
+},
   app: {
     
     head: {
@@ -139,15 +145,18 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Private keys are only available on the server
     AUTH_ORIGIN: process.env.AUTH_ORIGIN,
+    AUTH_SECRET: process.env.AUTH_SECRET,
 
+  
 
     // Public keys that are exposed to the client.
     public: {
-      googleMapKey: process.env.VUE_APP_GOOGLE_MAP_API_KEY
-    },
+      googleMapKey: process.env.VUE_APP_GOOGLE_MAP_API_KEY,
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || '/api',
+    },  
   },
 
-  modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt',
+  modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt','@sidebase/nuxt-auth',
   ],
   
 })
