@@ -1,4 +1,5 @@
 <script setup>
+
 import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
@@ -14,19 +15,15 @@ import { useUserStore } from '@core/stores/user'
 
 const userStore =useUserStore()
 
-
 definePageMeta({
   layout: 'blank',
   middleware:'authenticated'
 })
 
-
 const form = ref({
   mobile: '',
 })
 const refVForm = ref()
-
-
 const isPasswordVisible = ref(false)
 // const partner = useGenerateImageVariant(saudiCermics, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 const partner = useGenerateImageVariant(saudiCermics)
@@ -44,10 +41,8 @@ async function login(){
       const result = await response.json();
       console.log('result',result)
       userStore.updateUser(result)
-      navigateTo('/')
+      navigateTo('/place-order')
 
-
-      // navigateTo(route.query.to ? String(route.query.to) : '/', { replace: true })
     } else {
       console.error('Error checking mobile:', response.statusText);
     }

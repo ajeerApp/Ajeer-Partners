@@ -4,7 +4,6 @@ import { fileURLToPath } from 'node:url'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  
   app: {
     
     head: {
@@ -139,7 +138,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Private keys are only available on the server
     AUTH_ORIGIN: process.env.AUTH_ORIGIN,
+    AUTH_SECRET: process.env.AUTH_SECRET,
 
+  
 
     // Public keys that are exposed to the client.
     public: {
@@ -148,7 +149,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt',
+  modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt'
   ],
   
 })
