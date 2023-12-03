@@ -3,8 +3,8 @@
 ## Dev Notes
 the best compatible versions of dev tools as following:-
 * node v 21.2.0
-* after node is installed pnpm is installed using the following command:
-$ npm install -g pnpm
+# after node is installed pnpm is installed using the following command:
+ $ npm install -g pnpm
 
 ### Build Setup
 
