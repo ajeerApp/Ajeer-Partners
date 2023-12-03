@@ -1,5 +1,4 @@
 <script setup>
-const { signIn, data: sessionData } = useAuth()
 
 import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
@@ -12,53 +11,44 @@ import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
+import { useUserStore } from '@core/stores/user'
 
+const userStore =useUserStore()
 
 definePageMeta({
   layout: 'blank',
-  unauthenticatedOnly: true,
+  middleware:'authenticated'
+})
 
+const form = ref({
+  mobile: '',
 })
 const refVForm = ref()
+const isPasswordVisible = ref(false)
+// const partner = useGenerateImageVariant(saudiCermics, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
+const partner = useGenerateImageVariant(saudiCermics)
+const ajeerLogoBg = useGenerateImageVariant(ajeerLogo)
+const api = useRuntimeConfig().public.apiBaseUrl+'/users'
 
+const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 
-const credentials = ref({
-  mobile: 555555555,
-})
+//login user using mobile
+async function login(){
+  try {
+    const response = await fetch(`${api}?mobile=${form.mobile}`)
 
-async function login() {
-  const response = await signIn('credentials', {
-    callbackUrl: '/',
-    redirect: false,
-    ...credentials.value,
-  })
+    if (response.ok) {
+      const result = await response.json();
+      console.log('result',result)
+      userStore.updateUser(result)
+      navigateTo('/place-order')
 
-  // If error is not null => Error is occurred
-  if (response && response.error) {
-    const apiStringifiedError = response.error
-    const apiError = JSON.parse(apiStringifiedError)
-
-    errors.value = apiError.data
-    console.log("apiError",apiError)
-
-    // If err => Don't execute further
-    return
+    } else {
+      console.error('Error checking mobile:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error checking mobile:', error);
   }
-
-  // Reset error on successful login
-  errors.value = {}
-
-  // Update user abilities
-  const { user } = sessionData.value
-
-  useCookie('userData').value = user
-
-  // Save user abilities in cookie so we can retrieve it back on refresh
-  useCookie('userAbilityRules').value = user.abilityRules
-
-  ability.update(user.abilityRules ?? [])
-
-  navigateTo(route.query.to ? String(route.query.to) : '/', { replace: true })
 }
 
 const onSubmit = () => {
@@ -67,12 +57,6 @@ const onSubmit = () => {
       login()
   })
 }
-const isPasswordVisible = ref(false)
-// const partner = useGenerateImageVariant(saudiCermics, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
-const partner = useGenerateImageVariant(saudiCermics)
-const ajeerLogoBg = useGenerateImageVariant(ajeerLogo)
-
-const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 </script>
 
 <template>
@@ -160,17 +144,18 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
           </p>
         </VCardText>
         <VCardText>
-          <VForm  ref="refVForm"
+          <VForm ref="refVForm"
             @submit.prevent="onSubmit">
             <VRow>
               <!-- mobile -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="credentials.mobile"
+                  v-model="form.mobile"
                   autofocus
                   :label="$t('Mobile')"
                   type="number"
                   placeholder="e.g 5xxxxxxxx"
+                  :rules="[requiredValidator]"
                 />
               </VCol>
 

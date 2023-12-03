@@ -4,13 +4,6 @@ import { fileURLToPath } from 'node:url'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  auth: {
-    globalAppMiddleware: false,
-
-    provider: {
-        type: 'authjs'
-    }
-},
   app: {
     
     head: {
@@ -152,11 +145,11 @@ export default defineNuxtConfig({
     // Public keys that are exposed to the client.
     public: {
       googleMapKey: process.env.VUE_APP_GOOGLE_MAP_API_KEY,
-      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || '/api',
-    },  
+      apiBaseUrl:process.env.VUE_APP_BASE_URL
+    },
   },
 
-  modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt','@sidebase/nuxt-auth',
+  modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt'
   ],
   
 })
