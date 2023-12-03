@@ -17,13 +17,15 @@ const userStore =useUserStore()
 
 definePageMeta({
   layout: 'blank',
-  unauthenticatedOnly: true,
+  middleware:'authenticated'
 })
 
 
 const form = ref({
   mobile: '',
 })
+const refVForm = ref()
+
 
 const isPasswordVisible = ref(false)
 // const partner = useGenerateImageVariant(saudiCermics, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
@@ -36,18 +38,15 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 //login user using mobile
 async function login(){
   try {
-    const response = await fetch(api, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ mobile: 555555555 }),
-    });
+    const response = await fetch(`${api}?mobile=${form.mobile}`)
 
     if (response.ok) {
       const result = await response.json();
-      console.log('userStore',userStore.user)
+      console.log('result',result)
       userStore.updateUser(result)
+      navigateTo('/')
+
+
       // navigateTo(route.query.to ? String(route.query.to) : '/', { replace: true })
     } else {
       console.error('Error checking mobile:', response.statusText);
@@ -55,6 +54,13 @@ async function login(){
   } catch (error) {
     console.error('Error checking mobile:', error);
   }
+}
+
+const onSubmit = () => {
+  refVForm.value?.validate().then(({ valid: isValid }) => {
+    if (isValid)
+      login()
+  })
 }
 </script>
 
@@ -143,7 +149,8 @@ async function login(){
           </p>
         </VCardText>
         <VCardText>
-          <VForm @submit.prevent="login">
+          <VForm ref="refVForm"
+            @submit.prevent="onSubmit">
             <VRow>
               <!-- mobile -->
               <VCol cols="12">
@@ -153,6 +160,7 @@ async function login(){
                   :label="$t('Mobile')"
                   type="number"
                   placeholder="e.g 5xxxxxxxx"
+                  :rules="[requiredValidator]"
                 />
               </VCol>
 
