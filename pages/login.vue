@@ -10,23 +10,52 @@ import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
+import { useUserStore } from '@core/stores/user'
+
+const userStore =useUserStore()
+
 
 definePageMeta({
-  layout: 'blank', 
+  layout: 'blank',
+  unauthenticatedOnly: true,
 })
+
 
 const form = ref({
   mobile: '',
-  password: '',
-  remember: false,
 })
 
 const isPasswordVisible = ref(false)
 // const partner = useGenerateImageVariant(saudiCermics, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 const partner = useGenerateImageVariant(saudiCermics)
 const ajeerLogoBg = useGenerateImageVariant(ajeerLogo)
+const api = useRuntimeConfig().public.apiBaseUrl+'/users'
 
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
+
+//login user using mobile
+async function login(){
+  try {
+    const response = await fetch(api, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ mobile: 555555555 }),
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      console.log('userStore',userStore.user)
+      userStore.updateUser(result)
+      // navigateTo(route.query.to ? String(route.query.to) : '/', { replace: true })
+    } else {
+      console.error('Error checking mobile:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error checking mobile:', error);
+  }
+}
 </script>
 
 <template>
@@ -114,7 +143,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
           </p>
         </VCardText>
         <VCardText>
-          <VForm @submit.prevent="() => { }">
+          <VForm @submit.prevent="login">
             <VRow>
               <!-- mobile -->
               <VCol cols="12">

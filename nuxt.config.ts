@@ -143,7 +143,8 @@ export default defineNuxtConfig({
 
     // Public keys that are exposed to the client.
     public: {
-      googleMapKey: process.env.VUE_APP_GOOGLE_MAP_API_KEY
+      googleMapKey: process.env.VUE_APP_GOOGLE_MAP_API_KEY,
+      apiBaseUrl:process.env.VUE_APP_BASE_URL
     },
   },
 
