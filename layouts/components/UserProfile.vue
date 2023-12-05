@@ -16,7 +16,7 @@ import avatar1 from '@images/avatars/avatar-1.png'
       color="primary"
       variant="tonal"
     >
-      <!-- <VImg :src="avatar1" /> -->
+      <VImg :src="avatar1" />
 
       <!-- SECTION Menu -->
       <VMenu
@@ -41,7 +41,7 @@ import avatar1 from '@images/avatars/avatar-1.png'
                     color="primary"
                     variant="tonal"
                   >
-                    <!-- <VImg :src="avatar1" /> -->
+                    <VImg :src="avatar1" />
                   </VAvatar>
                 </VBadge>
               </VListItemAction>
