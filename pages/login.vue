@@ -41,7 +41,7 @@ async function login(){
       const result = await response.json();
       console.log('result',result)
       userStore.updateUser(result)
-      navigateTo('/place-order')
+      navigateTo('/')
 
     } else {
       console.error('Error checking mobile:', response.statusText);

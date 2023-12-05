@@ -5,10 +5,8 @@ import { fileURLToPath } from 'node:url'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   app: {
-    
     head: {
-      titleTemplate: '',
-      title: 'Ajeer Partners',
+      title: 'Ajeer',
 
       link: [{
         rel: 'icon',
@@ -41,7 +39,7 @@ export default defineNuxtConfig({
     }],
   },
 
-  plugins: ['@/plugins/vuetify/index.js', '@/plugins/iconify/index.js', '@/plugins/vue-google-maps', '@/plugins/i18n/index.js'],
+  plugins: ['@/plugins/vuetify/index.js', '@/plugins/iconify/index.js'],
 
   imports: {
     dirs: ['./@core/utils', './@core/composable/', './plugins/*/composables/*'],
@@ -149,7 +147,5 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt'
-  ],
-  
+  modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt'],
 })

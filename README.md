@@ -1,27 +1,35 @@
-## Ajeer - Ajeer partners
+# vue
 
-## Dev Notes
-the best compatible versions of dev tools as following:-
-* node v 21.2.0
-# after node is installed pnpm is installed using the following command:
- $ npm install -g pnpm
+This template should help get you started developing with Vue 3 in Vite.
 
-### Build Setup
+## Recommended IDE Setup
 
-##### Please contact your direct manager to get the environment variables then add them to .env file
+[VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur).
 
-```bash
-# install dependencies
-$ pnpm install
+## Type Support for `.vue` Imports in TS
 
-# serve with hot reload at localhost:3000
-$ pnpm run dev
+Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates.
 
-# build for production and launch server
-$ pnpm build
+However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can run `Volar: Switch TS Plugin on/off` from VS Code command palette.
 
-# generate static project
-$ pnpm generate
+## Customize configuration
+
+See [Vite Configuration Reference](https://vitejs.dev/config/).
+
+## Project Setup
+
+```sh
+npm install
 ```
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Type-Check, Compile and Minify for Production
+
+```sh
+npm run build
+```

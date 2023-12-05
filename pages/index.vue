@@ -4,9 +4,9 @@ import scheduledIconImage from '@images/icons/order-types/scheduled.svg'
 import { GoogleMap, Marker } from "vue3-google-map";
 import {useI18n} from 'vue-i18n'
 
-definePageMeta({
-  middleware: 'auth'
-})
+// definePageMeta({
+//   middleware: 'auth'
+// })
 
 const i18n =useI18n()
 const fawriIcon = useGenerateImageVariant(fawriIconImage)
