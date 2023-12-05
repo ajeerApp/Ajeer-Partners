@@ -12,6 +12,9 @@ const i18n =useI18n()
 const fawriIcon = useGenerateImageVariant(fawriIconImage)
 const scheduledIcon = useGenerateImageVariant(scheduledIconImage)
 const center = { lat: 24.7136, lng: 46.6753 };
+const api = useRuntimeConfig().public.apiBaseUrl
+const orders=ref([])
+
 const iconsSteps = [
   {
     title: i18n.t('Order Details'),
@@ -60,6 +63,26 @@ const formData = ref({
 const onSubmit = () => {
   console.log(formData.value)
 }
+ onMounted(async ()=>{
+  try {
+    const response = await fetch(`${api}/orders`)
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('result',data)
+       for(var i=0;i<data.length;i++){
+        orders.value.push(data[i].id)
+       }
+      console.log('orders',orders.value)
+
+
+    } else {
+      console.error('Error checking:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error checking:', error);
+  }
+})
 </script>
 
 <template>
@@ -86,7 +109,7 @@ const onSubmit = () => {
 
 
                 <VCol cols="12" md="12">
-                  <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="['12345']" />
+                  <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="orders" />
                 </VCol>
 
 
