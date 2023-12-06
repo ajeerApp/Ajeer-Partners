@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr:true,
   app: {
     head: {
       title: 'Ajeer',
