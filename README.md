@@ -33,3 +33,16 @@ npm run dev
 ```sh
 npm run build
 ```
+
+
+## Deployment
+
+some notes about deployment in production .
+#### stag
+``` 
+pm2 start ecosystem.config.cjs --only partners-stg
+```
+#### production
+``` 
+pm2 start ecosystem.config.cjs --only partners-pro
+```

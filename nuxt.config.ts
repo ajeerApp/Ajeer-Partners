@@ -73,11 +73,14 @@ export default defineNuxtConfig({
       },
     },
   },
-
+  nitro: {
+    serveStatic: true,
+  },
   // ℹ️ Disable source maps until this is resolved: https://github.com/vuetifyjs/vuetify-loader/issues/290
   sourcemap: {
-    server: false,
     client: false,
+    server: true,
+    port:3003
   },
 
   vue: {
@@ -139,7 +142,7 @@ export default defineNuxtConfig({
     AUTH_ORIGIN: process.env.AUTH_ORIGIN,
     AUTH_SECRET: process.env.AUTH_SECRET,
 
-  
+
 
     // Public keys that are exposed to the client.
     public: {
