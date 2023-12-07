@@ -40,9 +40,9 @@ npm run build
 some notes about deployment in production .
 #### stag
 ``` 
-pm2 start ecosystem.config.cjs --only partners-stg
+pm2 start ecosystem.config.cjs --only partners-stg --watch
 ```
 #### production
 ``` 
-pm2 start ecosystem.config.cjs --only partners-pro
+pm2 start ecosystem.config.cjs --only partners-pro --watch
 ```
