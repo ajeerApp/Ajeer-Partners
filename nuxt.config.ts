@@ -78,6 +78,7 @@ export default defineNuxtConfig({
   sourcemap: {
     server: false,
     client: false,
+    port: 3003
   },
 
   vue: {
@@ -139,7 +140,7 @@ export default defineNuxtConfig({
     AUTH_ORIGIN: process.env.AUTH_ORIGIN,
     AUTH_SECRET: process.env.AUTH_SECRET,
 
-  
+
 
     // Public keys that are exposed to the client.
     public: {
