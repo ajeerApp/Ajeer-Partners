@@ -23,11 +23,21 @@ const isDev = process.dev
 
 const errToShow = computed(() => {
   const is404 = props.error?.statusCode === 404 || props.error.message?.includes('404')
+  const is500 = props.error?.statusCode === 500 
+
 
   if (is404) {
     return {
       title: 'Page Not Found',
       description: 'We couldn\'t find the page you are looking for.',
+    }
+  }
+
+
+  else if (is500) {
+    return {
+      title: 'Server Error',
+      description: 'Please wait a while and refresh, If the issue isn\'t resvolved contact support team.',
     }
   }
 

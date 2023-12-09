@@ -1,11 +1,15 @@
-import Vue from 'vue';
-import VueGoogleMaps from 'vue3-google-maps';
-Vue.use(VueGoogleMaps, {
+import { defineNuxtPlugin } from "#app";
+import VueGoogleMaps from "@fawmi/vue-google-maps";
+
+export default defineNuxtPlugin((nuxtApp) => {
+    const runtimeConfig = useRuntimeConfig()
+  
+
+  nuxtApp.vueApp.use(VueGoogleMaps, {
     load: {
-        key: 'AIzaSyDIfHvUwp5JuGnAO6LP7yu_iK0ntHuH8to',
-        libraries: 'places',
-
+      key: runtimeConfig.public.googleMapKey,
+      libraries: "places", // This is required if you use the Autocomplete plugin
     },
-    installComponents: true
-
+    autobindAllEvents: true,
+  });
 });

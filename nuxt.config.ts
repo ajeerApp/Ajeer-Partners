@@ -105,6 +105,7 @@ export default defineNuxtConfig({
 
     build: {
       chunkSizeWarningLimit: 5000,
+      transpile: ["@fawmi/vue-google-maps"],
     },
 
     optimizeDeps: {
