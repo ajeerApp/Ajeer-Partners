@@ -48,17 +48,19 @@ pnpm run build
 
 some notes about deployment .
 
+### Deploy using pm2
+
 #### Deploy in stag
 ```sh
-pm2 start ecosystem.config.js --only ajeer-partners-stg --watch
+pm2 start ecosystem.config.cjs --only ajeer-partners-stg --watch
 ```
 
 #### Deploy in production
 ```sh
-pm2 start ecosystem.config.js --only ajeer-partners-prod --watch
+pm2 start ecosystem.config.cjs --only ajeer-partners-prod --watch
 ```
 
-while the "ajeer-pwa-prod" is the app name in ecosystem.config.js file, you can change it to any name you want.
+while the "ajeer-partners-prod" is the app name in ecosystem.config.js file, you can change it to any name you want.
 
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
