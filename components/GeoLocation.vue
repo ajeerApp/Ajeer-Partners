@@ -1,6 +1,8 @@
 
 <script setup>
+import { onMounted } from 'vue'
 import { useLocationStore } from '@core/stores/location';
+
 const useLocation =useLocationStore()
 
 onMounted(()=>{

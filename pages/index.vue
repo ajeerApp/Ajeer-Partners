@@ -183,16 +183,16 @@ const getCurrentTime=()=> {
                     {{ $t("Setup Date") }}
                   </p>
                 </VCol>
-                <VCol cols="12">
+                <VCol cols="12" >
                   <VRow>
-                    <VCol cols="6">
+                    <VCol cols="12" md="6">
                       <VRadioGroup class="time-bar" :class="[isFawri ? 'active-style' : '']" for="on-demand"
                         @click="isFawri = true">
                         <VRow>
                           <VCol cols="2">
                             <img class="img-bar" :src="fawriIcon" alt="fawri">
                           </VCol>
-                          <VCol>
+                          <VCol >
                             <span class="text-middle">{{ $t("Fawri") }}</span>
                           </VCol>
                         </VRow>
@@ -203,7 +203,7 @@ const getCurrentTime=()=> {
                     </VCol>
 
 
-                    <VCol cols="6">
+                    <VCol cols="12" md="6">
                       <VRadioGroup class="time-bar" for="calendar" @click="isFawri = false"
                         :class="[!isFawri ? 'active-style' : '']">
                         <span class="filter">
