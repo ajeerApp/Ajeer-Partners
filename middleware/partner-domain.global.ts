@@ -10,6 +10,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
 function isValidSubdomain(subdomain) {
   // TODO, make api request to backend to get partner info
-  const validSubdomains = ['test1', 'test2'];
+  // TODO, handle this by api with dashboard
+  const validSubdomains = ['saudiceramics', 'test1'];
   return validSubdomains.includes(subdomain);
 }
