@@ -28,6 +28,9 @@ dependencies:
   '@iconify-json/tabler':
     specifier: ^1.1.96
     version: 1.1.96
+  '@nuxtjs/router':
+    specifier: 1.5.1
+    version: 1.5.1
   '@sindresorhus/is':
     specifier: ^6.0.1
     version: 6.1.0
@@ -1992,6 +1995,12 @@ packages:
       - rollup
       - supports-color
     dev: true
+
+  /@nuxtjs/router@1.5.1:
+    resolution: {integrity: sha512-TQdDOzpknaTv3WETzq9837qIQJ3UjStZDM66aih0MfNk6maI0wnVxkhkgDuBlQTC8cLzbzKsrttLCHp6fr95zw==}
+    dependencies:
+      consola: 2.15.3
+    dev: false
 
   /@open-draft/until@1.0.3:
     resolution: {integrity: sha512-Aq58f5HiWdyDlFffbbSjAlv596h/cOnt2DO1w3DOC7OJ5EHs0hd/nycJfiu9RJbT6Yk6F1knnRRXNSpxoIVZ9Q==}
@@ -4329,6 +4338,10 @@ packages:
 
   /connect-pause@0.1.1:
     resolution: {integrity: sha512-a1gSWQBQD73krFXdUEYJom2RTFrWUL3YvXDCRkyv//GVXc79cdW9MngtRuN9ih4FDKBtfJAJId+BbDuX+1rh2w==}
+    dev: false
+
+  /consola@2.15.3:
+    resolution: {integrity: sha512-9vAdYbHj6x2fLKC4+oPH0kFzY/orMZyG2Aj+kNylHxKGJ/Ed4dpNyAQYwJOdqO4zdM7XpVHmyejQDcQHrnuXbw==}
     dev: false
 
   /consola@3.2.3:
