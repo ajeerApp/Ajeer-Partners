@@ -3,7 +3,7 @@ import fawriIconImage from '@images/icons/order-types/fawri.svg'
 import scheduledIconImage from '@images/icons/order-types/scheduled.svg'
 import {useI18n} from 'vue-i18n'
 import Error from '../error.vue'
-import { useLocationStore } from '@core/stores/location';
+import { useLocationStore } from '@/stores/location';
 
 // definePageMeta({
 //   middleware: 'auth'
@@ -58,7 +58,7 @@ const onSubmit = () => {
   console.log("formData",formData.value)
 }
 
-//set place in using search places input 
+//set place in using search places input
 const setPlace=(place) =>{
         let location = place.geometry.location;
         center.value = location;
@@ -82,7 +82,7 @@ console.log("formData.value.time",formData.value.time)
 }
 /**
  * get date format of yyyy-mm-dd
- * @param date in calender 
+ * @param date in calender
  */
 const getDateFormat=(date)=>{
     var d = new Date(date),
@@ -90,9 +90,9 @@ const getDateFormat=(date)=>{
         day = '' + d.getDate(),
         year = d.getFullYear();
 
-    if (month.length < 2) 
+    if (month.length < 2)
         month = '0' + month;
-    if (day.length < 2) 
+    if (day.length < 2)
         day = '0' + day;
 
     return [year, month, day].join('-');
@@ -258,7 +258,7 @@ const getCurrentTime=()=> {
         :draggable="true"
         @click="center=m"
 
-       
+
       />
   </GMapMap>
                 </VCol>

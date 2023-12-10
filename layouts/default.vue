@@ -1,5 +1,5 @@
 <script setup>
-import { useConfigStore } from '@core/stores/config'
+import { useConfigStore } from '@/stores/config'
 import { AppContentLayoutNav } from '@layouts/enums'
 import { switchToVerticalNavOnLtOverlayNavBreakpoint } from '@layouts/utils'
 

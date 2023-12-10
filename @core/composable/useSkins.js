@@ -1,5 +1,5 @@
 import { VThemeProvider } from 'vuetify/components/VThemeProvider'
-import { useConfigStore } from '@core/stores/config'
+import { useConfigStore } from '@/stores/config'
 import { AppContentLayoutNav } from '@layouts/enums'
 
 // TODO: Use `VThemeProvider` from dist instead of lib (Using this component from dist causes navbar to loose sticky positioning)

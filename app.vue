@@ -5,7 +5,7 @@ import initCore from '@core/initCore'
 import {
   initConfigStore,
   useConfigStore,
-} from '@core/stores/config'
+} from '@/stores/config'
 import { hexToRgb } from '@layouts/utils'
 
 const { global } = useTheme()
