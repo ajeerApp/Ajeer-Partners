@@ -50,12 +50,12 @@ some notes about deployment .
 
 #### Deploy in stag
 ```sh
-pm2 start ecosystem.config.js --only ajeer-partners-stg
+pm2 start ecosystem.config.js --only ajeer-partners-stg --watch
 ```
 
 #### Deploy in production
 ```sh
-pm2 start ecosystem.config.js --only ajeer-partners-prod
+pm2 start ecosystem.config.js --only ajeer-partners-prod --watch
 ```
 
 while the "ajeer-pwa-prod" is the app name in ecosystem.config.js file, you can change it to any name you want.
