@@ -1,17 +1,26 @@
 <script setup>
 import fawriIconImage from '@images/icons/order-types/fawri.svg'
 import scheduledIconImage from '@images/icons/order-types/scheduled.svg'
-import { GoogleMap, Marker } from "vue3-google-map";
 import {useI18n} from 'vue-i18n'
+import Error from '../error.vue'
+import { useLocationStore } from '@core/stores/location';
 
 // definePageMeta({
 //   middleware: 'auth'
 // })
-
+const locationStore=useLocationStore()
 const i18n =useI18n()
 const fawriIcon = useGenerateImageVariant(fawriIconImage)
 const scheduledIcon = useGenerateImageVariant(scheduledIconImage)
-const center = { lat: 24.7136, lng: 46.6753 };
+const center = ref(locationStore.getLocation);
+const api = useRuntimeConfig().public.apiBaseUrl
+const orders=ref([])
+const errorObject=ref({
+  status:false
+})
+const mapMarkers=ref([ locationStore.getLocation])
+// const fullDate=null
+
 const iconsSteps = [
   {
     title: i18n.t('Order Details'),
@@ -37,34 +46,105 @@ const isFawri = ref(true)
 const isCPasswordVisible = ref(false)
 
 const formData = ref({
-  username: 'johndoe',
-  email: 'john.doe@email.com',
-  password: 'johndoe@J2',
-  cPassword: 'johndoe@J2',
-  order: '123',
-  firstName: 'John',
-  lastName: 'Doe',
-  service: 'Heater',
-  language: 'English',
-  address: '98 Borough bridge Road, Birmingham',
-  landmark: 'Borough bridge',
-  pincode: '658921',
-  city: 'Birmingham',
-  twitter: 'https://twitter.com/abc',
-  facebook: 'https://facebook.com/abc',
-  googlePlus: 'https://plus.google.com/abc',
-  linkedIn: 'https://linkedin.com/abc',
-  date: null
+  order:null,
+  date:null,
+  time:null
 })
 
+
 const onSubmit = () => {
-  console.log(formData.value)
+  //assign date and time
+  assignDate()
+  console.log("formData",formData.value)
 }
+
+//set place in using search places input 
+const setPlace=(place) =>{
+        let location = place.geometry.location;
+        center.value = location;
+        mapMarkers.value = [location];
+    }
+
+//assign date and time
+const assignDate=()=>{
+  if (isFawri.value) {
+    const todayDate = new Date();
+    formData.value.date= getDateFormat(todayDate);
+    formData.value.time=getCurrentTime()
+  }
+  else {
+var date=formData.value.date
+formData.value.date=formData.value.date.substring(0,formData.value.date.indexOf(' '))
+formData.value.time=date.substring(date.indexOf(' ') + 1)
+
+console.log("formData.value.time",formData.value.time)
+  }
+}
+/**
+ * get date format of yyyy-mm-dd
+ * @param date in calender 
+ */
+const getDateFormat=(date)=>{
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+//get currenct time
+const getCurrentTime=()=> {
+  const now = new Date();
+  let hours = now.getHours();
+  let minutes = now.getMinutes();
+  let seconds = now.getSeconds();
+
+  // Convert to 12-hour format and determine AM/PM
+  const period = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+
+  // Add leading zeros to single-digit minutes and seconds
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  seconds = seconds < 10 ? '0' + seconds : seconds;
+
+  // Construct the formatted time string
+  const formattedTime = `${hours}:${minutes}:${seconds} ${period}`;
+
+  return formattedTime;
+}
+//call api on component mount
+ onMounted(async ()=>{
+  try {
+    const response = await fetch(`${api}/orders`)
+    if (response.ok) {
+      const data = await response.json();
+      console.log('result',data)
+       for(var i=0;i<data.length;i++){
+        orders.value.push(data[i].id)
+       }
+    } else {
+      console.error('Error checking:', response.statusText);
+    }
+  } catch (error) {
+    errorObject.value.status=true;
+    errorObject.value={
+      "statusCode":500,
+    }
+
+  }
+})
 </script>
 
 <template>
-  <!-- 👉 Stepper -->
-  <div class="mb-6">
+<div v-if="errorObject.status==false">
+    <!-- 👉 Stepper -->
+    <div class="mb-6">
     <AppStepper v-model:current-step="currentStep" :items="iconsSteps" />
   </div>
   <VCol cols="12" sm="6" md="6" :style="'margin:auto'">
@@ -86,7 +166,7 @@ const onSubmit = () => {
 
 
                 <VCol cols="12" md="12">
-                  <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="['12345']" />
+                  <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="orders" />
                 </VCol>
 
 
@@ -103,16 +183,16 @@ const onSubmit = () => {
                     {{ $t("Setup Date") }}
                   </p>
                 </VCol>
-                <VCol cols="12">
+                <VCol cols="12" >
                   <VRow>
-                    <VCol cols="6">
+                    <VCol cols="12" md="6">
                       <VRadioGroup class="time-bar" :class="[isFawri ? 'active-style' : '']" for="on-demand"
                         @click="isFawri = true">
                         <VRow>
                           <VCol cols="2">
                             <img class="img-bar" :src="fawriIcon" alt="fawri">
                           </VCol>
-                          <VCol>
+                          <VCol >
                             <span class="text-middle">{{ $t("Fawri") }}</span>
                           </VCol>
                         </VRow>
@@ -123,7 +203,7 @@ const onSubmit = () => {
                     </VCol>
 
 
-                    <VCol cols="6">
+                    <VCol cols="12" md="6">
                       <VRadioGroup class="time-bar" for="calendar" @click="isFawri = false"
                         :class="[!isFawri ? 'active-style' : '']">
                         <span class="filter">
@@ -144,7 +224,7 @@ const onSubmit = () => {
               </VRow>
               <VRow class="d-flex justify-center">
                 <AppDateTimePicker v-model="formData.date" :placeholder="$t('Select Date and time')"
-                  :config="{ enableTime: true, dateFormat: 'Y-m-d H:i', inline: true }" v-if="!isFawri" />
+                  :config="{ enableTime: true, dateFormat: 'Y-m-d h:i:s K', inline: true ,useSeconds:true}" v-if="!isFawri" />
               </VRow>
             </VWindowItem>
 
@@ -154,18 +234,33 @@ const onSubmit = () => {
                   <h6 class="text-h6 font-weight-medium">
                     {{ $t("Address") }}
                   </h6>
-                  <p class="mb-0">
-                    {{ $t("Enter or Choose Your Address.") }}
-                  </p>
                 </VCol>
                 <VCol cols="12" md="12">
-                  <AppTextField v-model="formData.location" :placeholder="$t('Location')" :label="$t('Location')" />
+                  <GMapAutocomplete
+                  class="autocomplete-map"
+       :placeholder='$t("Enter or Choose Your Address.")'
+       @place_changed="setPlace"
+    >
+  </GMapAutocomplete>
                 </VCol>
                 <VCol cols="12" md="12">
-                  <GoogleMap api-key="AIzaSyDIfHvUwp5JuGnAO6LP7yu_iK0ntHuH8to" style="width: 100%; height: 500px"
-                    :center="center" :zoom="15">
-                    <Marker :options="{ position: center }" />
-                  </GoogleMap>
+                  <GMapMap
+      :center="center"
+      :zoom="15"
+      map-type-id="terrain"
+      style="width:100%; height: 400px"
+  >
+  <GMapMarker
+        v-for="(marker, index) in mapMarkers"
+        :key="index"
+        :position="marker"
+        :clickable="true"
+        :draggable="true"
+        @click="center=m"
+
+       
+      />
+  </GMapMap>
                 </VCol>
 
               </VRow>
@@ -196,6 +291,11 @@ const onSubmit = () => {
       </VCardText>
     </VCard>
   </VCol>
+
+    <!-- 👉 Get currenct location -->
+<GeoLocation/>
+</div>
+  <error :error="errorObject" v-else></error>
 </template>
 
 
@@ -257,5 +357,14 @@ input[type="radio"].radiobtn:hover+label>span>img {
   bottom: 2%;
   left: 5%;
   color: #b4b3b3;
+}
+.autocomplete-map{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 </style>

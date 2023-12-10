@@ -188,5 +188,41 @@
       "mobile": 555555555,
       "id": 47
     }
-  ]
+  ],
+  "orders": [
+    {
+        "id": "1122",
+        "delivery_status": "completed",
+        "purchase_date": "2023-10-25",
+        "products": [
+            {
+                "name": "awesome first product name",
+                "quantity": "2",
+                "image": "https://partner_doomain/media/product1_img.jpg"
+            },
+            {
+                "name": "awesome second product name",
+                "quantity": "2",
+                "image": "https://partner_doomain/media/product4_img.jpg"
+            }
+        ]
+    },
+    {
+      "id": "1123",
+      "delivery_status": "completed",
+      "purchase_date": "2023-10-25",
+      "products": [
+          {
+              "name": "awesome first product name",
+              "quantity": "2",
+              "image": "https://partner_doomain/media/product1_img.jpg"
+          },
+          {
+              "name": "awesome second product name",
+              "quantity": "2",
+              "image": "https://partner_doomain/media/product4_img.jpg"
+          }
+      ]
+  }
+]
 }

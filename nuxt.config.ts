@@ -12,7 +12,7 @@ export default defineNuxtConfig({
       link: [{
         rel: 'icon',
         type: 'image/x-icon',
-        href: '/favicon.ico',
+        href: '/ajeer-logo-blue.png',
       }],
     },
   },
@@ -40,7 +40,7 @@ export default defineNuxtConfig({
     }],
   },
 
-  plugins: ['@/plugins/vuetify/index.js', '@/plugins/iconify/index.js'],
+  plugins: ['@/plugins/vuetify/index.js', '@/plugins/iconify/index.js','@/plugins/vue-google-maps.js'],
 
   imports: {
     dirs: ['./@core/utils', './@core/composable/', './plugins/*/composables/*'],
@@ -133,7 +133,7 @@ export default defineNuxtConfig({
   },
 
   build: {
-    transpile: ['vuetify'],
+    transpile: ['vuetify',"@fawmi/vue-google-maps"],
   },
   runtimeConfig: {
     // Private keys are only available on the server
