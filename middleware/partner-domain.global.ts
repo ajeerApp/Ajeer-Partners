@@ -3,7 +3,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   console.log('partnerdomain middleware, subdomain is: ', subdomain);
   if (!subdomain || !isValidSubdomain(subdomain)) {
     console.log('partnerdomain is not Valid, subDomain is: ', subdomain);
-    // return navigateTo('/');
     throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
   }
 });
