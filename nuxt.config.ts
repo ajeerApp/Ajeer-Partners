@@ -140,8 +140,6 @@ export default defineNuxtConfig({
     AUTH_ORIGIN: process.env.AUTH_ORIGIN,
     AUTH_SECRET: process.env.AUTH_SECRET,
 
-
-
     // Public keys that are exposed to the client.
     public: {
       googleMapKey: process.env.VUE_APP_GOOGLE_MAP_API_KEY,
