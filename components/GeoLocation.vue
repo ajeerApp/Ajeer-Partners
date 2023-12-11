@@ -1,7 +1,7 @@
 
 <script setup>
 import { onMounted } from 'vue'
-import { useLocationStore } from '@core/stores/location';
+import { useLocationStore } from '@/stores/location';
 
 const useLocation =useLocationStore()
 
@@ -25,6 +25,6 @@ console.log("lat",latitude,"long",longitude)
 
 
 <template>
-    
+
 </template>
 

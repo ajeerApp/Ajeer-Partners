@@ -9,7 +9,7 @@ import {
   Skins,
   Theme,
 } from '@core/enums'
-import { useConfigStore } from '@core/stores/config'
+import { useConfigStore } from '@/stores/config'
 import {
   AppContentLayoutNav,
   ContentWidth,
@@ -189,7 +189,7 @@ const { locale } = useI18n({ useScope: 'global' })
 
 const isActiveLangRTL = computed(() => {
   const lang = themeConfig.app.i18n.langConfig.find(l => l.i18nLang === locale.value)
-  
+
   return lang?.isRTL ?? false
 })
 

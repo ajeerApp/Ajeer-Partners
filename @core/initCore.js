@@ -1,6 +1,6 @@
 import { useStorage } from '@vueuse/core'
 import { useTheme } from 'vuetify'
-import { useConfigStore } from '@core/stores/config'
+import { useConfigStore } from '@/stores/config'
 import { cookieRef, namespaceConfig } from '@layouts/stores/config'
 import { themeConfig } from '@themeConfig'
 

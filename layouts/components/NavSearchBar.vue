@@ -1,7 +1,7 @@
 <script setup>
 import Shepherd from 'shepherd.js'
 import { withQuery } from 'ufo'
-import { useConfigStore } from '@core/stores/config'
+import { useConfigStore } from '@/stores/config'
 
 defineOptions({
   // 👉 Is App Search Bar Visible
