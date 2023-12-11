@@ -1,5 +1,5 @@
 <script setup>
-import { useConfigStore } from '@core/stores/config'
+import { useConfigStore } from '@/stores/config'
 
 const props = defineProps({
   themes: {

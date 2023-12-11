@@ -11,45 +11,47 @@ import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
-import { useUserStore } from '@core/stores/user'
 
-const userStore =useUserStore()
+import { useAuth } from '~/stores/auth';
+import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { isAuthenticated } from '@/utils/auth-user';
 
 definePageMeta({
   layout: 'blank',
-  middleware:'authenticated'
 })
 
 const form = ref({
-  mobile: '',
+  mobile: '536940265',
 })
+
 const refVForm = ref()
 const isPasswordVisible = ref(false)
 // const partner = useGenerateImageVariant(saudiCermics, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 const partner = useGenerateImageVariant(saudiCermics)
 const ajeerLogoBg = useGenerateImageVariant(ajeerLogo)
-const api = useRuntimeConfig().public.apiBaseUrl+'/users'
-
+// const api = useRuntimeConfig().public.apiBaseUrl+'/users'
+const config = useRuntimeConfig()
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 
-//login user using mobile
-async function login(){
+const checkbox = ref(false);
+const router = useRouter();
+const authStore = useAuth();
+
+const mobile = ref("501234567");
+
+// TODO, add front validation
+const login = async () => {
+  console.log('submit login button clicked, and login function fired');
   try {
-    const response = await fetch(`${api}?mobile=${form.mobile}`)
-
-    if (response.ok) {
-      const result = await response.json();
-      console.log('result',result)
-      userStore.updateUser(result)
-      navigateTo('/')
-
-    } else {
-      console.error('Error checking mobile:', response.statusText);
-    }
+    await authStore.login({
+      mobile: mobile.value,
+    });
+    router.push('/');
   } catch (error) {
-    console.error('Error checking mobile:', error);
+    console.error(error);
   }
-}
+};
 
 const onSubmit = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
@@ -57,6 +59,7 @@ const onSubmit = () => {
       login()
   })
 }
+
 </script>
 
 <template>
@@ -82,7 +85,7 @@ const onSubmit = () => {
             {{ $t('in partner with') }}
           </h4>
              </VRow>
-         
+
         </VCardText>
             </VCol>
           <VCol cols="3">
@@ -135,7 +138,7 @@ const onSubmit = () => {
             />
             </VCol>
           </VRow>
-        
+
           <h4 class="text-h4 mb-1">
             {{ $t("Welcome to") }} <span class="text-capitalize">{{themeConfig.app.title}}</span>! 👋🏻
           </h4>
@@ -178,7 +181,7 @@ const onSubmit = () => {
                 <span>{{ $t("Ajeer building a better tomorrow.") }}</span>
               </VCol>
 
-          
+
             </VRow>
           </VForm>
         </VCardText>

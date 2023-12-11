@@ -117,6 +117,7 @@ export default defineNuxtConfig({
     },
 
     plugins: [
+      '~/plugins/ofetch.ts',
       vuetify({
         styles: {
           configFile: 'assets/styles/variables/_vuetify.scss',
@@ -135,17 +136,26 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify',"@fawmi/vue-google-maps"],
   },
-  runtimeConfig: {
-    // Private keys are only available on the server
-    AUTH_ORIGIN: process.env.AUTH_ORIGIN,
-    AUTH_SECRET: process.env.AUTH_SECRET,
 
-    // Public keys that are exposed to the client.
+  runtimeConfig: {
+    // The private keys which are only available server-side
+    securityApi: '123456789', // will overwrite when runtime by .env NUXT_SECURITY_API value
+    googleMapKey: 'AIzaSyDIfHvUwp5JuGnAO6LP7yu_iK0ntHuH8to',
+    // Keys within public are also exposed client-side
     public: {
-      googleMapKey: process.env.VUE_APP_GOOGLE_MAP_API_KEY,
-      apiBaseUrl:process.env.VUE_APP_BASE_URL
-    },
-  },
+      apiBase: 'https://mafak.stg.iajeer.com/api/v1/partners/',
+      ajeerDashboardUrl: process.env.NUXT_PUBLIC_AJEER_DASHBOARD_URL,
+    }
+  }, // runtimeConfig
 
   modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt'],
+
+  pinia: {
+    autoImports: [
+      // automatically imports `defineStore`
+      'defineStore', // import { defineStore } from 'pinia'
+      ['defineStore', 'definePiniaStore'], // import { defineStore as definePiniaStore } from 'pinia'
+    ],
+  },
+
 })

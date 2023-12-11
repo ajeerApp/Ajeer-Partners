@@ -12,7 +12,7 @@ import {
 } from 'vuetify/lib/components/VInput/VInput'
 
 import { filterInputAttrs } from 'vuetify/lib/util/helpers'
-import { useConfigStore } from '@core/stores/config'
+import { useConfigStore } from '@/stores/config'
 
 const props = defineProps({
   autofocus: Boolean,
@@ -109,7 +109,7 @@ const emitModelValue = val => {
 
 const elementId = computed(() => {
   const _elementIdToken = fieldProps.id || fieldProps.label
-  
+
   return _elementIdToken ? `app-picker-field-${ _elementIdToken }-${ Math.random().toString(36).slice(2, 7) }` : undefined
 })
 </script>
