@@ -119,26 +119,26 @@ const getCurrentTime=()=> {
   return formattedTime;
 }
 //call api on component mount
- onMounted(async ()=>{
-  try {
-    const response = await fetch(`${api}/orders`)
-    if (response.ok) {
-      const data = await response.json();
-      console.log('result',data)
-       for(var i=0;i<data.length;i++){
-        orders.value.push(data[i].id)
-       }
-    } else {
-      console.error('Error checking:', response.statusText);
-    }
-  } catch (error) {
-    errorObject.value.status=true;
-    errorObject.value={
-      "statusCode":500,
-    }
+//  onMounted(async ()=>{
+//   try {
+//     const response = await fetch(`${api}/orders`)
+//     if (response.ok) {
+//       const data = await response.json();
+//       console.log('result',data)
+//        for(var i=0;i<data.length;i++){
+//         orders.value.push(data[i].id)
+//        }
+//     } else {
+//       console.error('Error checking:', response.statusText);
+//     }
+//   } catch (error) {
+//     errorObject.value.status=true;
+//     errorObject.value={
+//       "statusCode":500,
+//     }
 
-  }
-})
+//   }
+// })
 </script>
 
 <template>

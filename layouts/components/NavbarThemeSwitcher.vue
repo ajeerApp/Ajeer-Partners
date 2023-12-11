@@ -8,10 +8,7 @@ const themes = [
     name: 'light',
     icon: 'tabler-sun-high',
   },
-  {
-    name: 'dark',
-    icon: 'tabler-moon',
-  },
+  
 ]
 </script>
 

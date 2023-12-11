@@ -6,7 +6,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   nuxtApp.vueApp.use(VueGoogleMaps, {
     load: {
-      key: runtimeConfig.googleMapKey,
+      key: runtimeConfig.public.googleMapKey,
       libraries: "places", // This is required if you use the Autocomplete plugin
     },
     autobindAllEvents: true,
