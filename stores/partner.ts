@@ -1,16 +1,14 @@
 import { defineStore } from 'pinia';
-import {isValidPartner} from "@/utils/partner-info";
+import { getSubDomain } from '@/utils/sub-domain';
 
 interface PartnerState {
   partner: {
     id: string;
-    otp: string;
+    domain: string;
     email: string;
     phone: string;
     website: string;
     landing_page_content: string;
-    app_version: string;
-    access_token: string;
   } | null;
 }
 
@@ -20,33 +18,33 @@ export const partnerInfo = defineStore('partner', {
   }),
   getters: {
     isValidPartner(state): boolean {
-      // TODO , get domain dynamic from url
-      return state.partner && (state.partner.domain !== null && state.partner.domain !== undefined) && state.partner.domain == 'saudiceramics';
+      const subDomain = getSubDomain();
+      return state.partner && (state.partner.domain !== null && state.partner.domain !== undefined) && state.partner.domain == `${subDomain}`;
     },
     partnerInfo(state): string | null {
       return state.partner ? state.partner : null;
     },
   },
   actions: {
-    async login(payload: {}) {
+    async getInfo(payload: {}) {
       const config = useRuntimeConfig()
+      const subDomain = getSubDomain();
       // TODO, get partner_domain from request, make domain dynamic
-      const response = await $fetch(`${config.public.apiBase}saudiceramics`, {
+      const response = await $fetch(`${config.public.apiBase}${subDomain}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        // body: JSON.stringify(payload),
       });
       const res = response;
       const resData = res.data;
-      const domain = resData.domain;
-      console.log('thi is partner res', res);
+      console.log('thi is resData in partner info', resData);
       if (res.success === true) {
         console.log('partner res.success === true');
         this.partner = resData.partner;
-        this.partner.domain = domain;
-        console.log('this partner', this.partner);
+        console.log('thi partner domain', this.partner.domain );
+        return this.partner;
       } else {
         throw new Error('failed to get partner info');
       }

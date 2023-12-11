@@ -1,9 +1,9 @@
 import { partnerInfo } from '@/stores/partner';
 
 export function isValidPartner() {
-     // must define authStore for every export function
-    const loggegedIn= partnerInfo();
-    return loggegedIn.isValidPartner;
+     // must define partner for every export function
+    const partner= partnerInfo();
+    return partner.isValidPartner;
 }
 
 export function getPartnerInfo() {
