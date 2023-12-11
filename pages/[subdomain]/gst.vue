@@ -36,6 +36,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 
 const checkbox = ref(false);
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuth();
 const subDomain = getSubDomain();
 
@@ -49,6 +50,7 @@ const login = async () => {
       mobile: mobile.value,
     });
     router.push(`create-order`);
+    console.log("route",route)
   } catch (error) {
     console.error(error);
   }
