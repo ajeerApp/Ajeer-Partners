@@ -40,7 +40,12 @@ export default defineNuxtConfig({
     }],
   },
 
-  plugins: ['@/plugins/vuetify/index.js', '@/plugins/iconify/index.js','@/plugins/vue-google-maps.js'],
+  plugins: [
+      '@/plugins/vuetify/index.js',
+      '@/plugins/iconify/index.js',
+      '@/plugins/vue-google-maps.js',
+      '~/plugins/ofetch.ts'
+  ],
 
   imports: {
     dirs: ['./@core/utils', './@core/composable/', './plugins/*/composables/*'],
@@ -117,7 +122,6 @@ export default defineNuxtConfig({
     },
 
     plugins: [
-      '~/plugins/ofetch.ts',
       vuetify({
         styles: {
           configFile: 'assets/styles/variables/_vuetify.scss',
@@ -145,6 +149,7 @@ export default defineNuxtConfig({
     public: {
       apiBase: 'https://mafak.stg.iajeer.com/api/v1/partners/',
       ajeerDashboardUrl: process.env.NUXT_PUBLIC_AJEER_DASHBOARD_URL,
+      appUrl: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3003',
     }
   }, // runtimeConfig
 

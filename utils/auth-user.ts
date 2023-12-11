@@ -3,10 +3,7 @@ import { useAuth } from '@/stores/auth';
 export function isAuthenticated() {
      // must define authStore for every export function
   const authStore= useAuth();
-  const isAuthorized = authStore.isLoggedIn !== null && authStore.isLoggedIn !== false;
-  console.log('isAuthenticated', isAuthorized);
-  console.log('getAuthUserToken', getAuthUserToken);
-  return isAuthorized;
+  return authStore.isLoggedIn !== null && authStore.isLoggedIn !== false;
 }
 
 export function getAuthUserToken() {

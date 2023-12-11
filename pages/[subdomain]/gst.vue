@@ -15,7 +15,6 @@ import { themeConfig } from '@themeConfig'
 import { useAuth } from '~/stores/auth';
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { isAuthenticated } from '@/utils/auth-user';
 
 definePageMeta({
   layout: 'blank',
@@ -73,36 +72,36 @@ const onSubmit = () => {
     >
       <div class="position-relative bg-background rounded-lg w-100 me-0">
         <div class="d-flex align-center justify-center w-100 h-100">
-        <VRow class="d-flex justify-center">
-          <VCol cols="12">
-            <VCardText>
-             <VRow  class="d-flex justify-center">
-              <VNodeRenderer cols="6"
-            :nodes="themeConfig.app.logo"
-            class=""
-          />
-          <h4 cols="6" class="text-h4 mb-1 d-flex align-center justify-center">
-            {{ $t('in partner with') }}
-          </h4>
-             </VRow>
+          <VRow class="d-flex justify-center">
+            <VCol cols="12">
+              <VCardText>
+                <VRow  class="d-flex justify-center">
+                  <VNodeRenderer cols="6"
+                                 :nodes="themeConfig.app.logo"
+                                 class=""
+                  />
+                  <h4 cols="6" class="text-h4 mb-1 d-flex align-center justify-center">
+                    {{ $t('in partner with') }}
+                  </h4>
+                </VRow>
 
-        </VCardText>
+              </VCardText>
             </VCol>
-          <VCol cols="3">
-            <VImg
-            max-width="300"
-            :src="partner"
-            class="auth-illustration mb-2"
-          />
-          </VCol>
-          <!-- <VCol cols="3" >
-            <VImg
-            max-width="300"
-            :src="ajeerLogoBg"
-            class="auth-illustration mb-2"
-          />
-          </VCol> -->
-        </VRow>
+            <VCol cols="3">
+              <VImg
+                max-width="300"
+                :src="partner"
+                class="auth-illustration mb-2"
+              />
+            </VCol>
+            <!-- <VCol cols="3" >
+              <VImg
+              max-width="300"
+              :src="ajeerLogoBg"
+              class="auth-illustration mb-2"
+            />
+            </VCol> -->
+          </VRow>
         </div>
 
         <VImg
@@ -126,16 +125,16 @@ const onSubmit = () => {
           <VRow class="d-flex justify-center">
             <VCol cols="col-3">
               <VNodeRenderer
-            :nodes="themeConfig.app.logo"
-            class="mb-2"
-          />
+                :nodes="themeConfig.app.logo"
+                class="mb-2"
+              />
             </VCol>
             <VCol cols="col-3" class="d-block d-md-none">
-                <VImg
+              <VImg
                 :style="{ 'height': '150px' }"
-              :src="partner"
-              class="auth-illustration mb-2"
-            />
+                :src="partner"
+                class="auth-illustration mb-2"
+              />
             </VCol>
           </VRow>
 
@@ -148,7 +147,7 @@ const onSubmit = () => {
         </VCardText>
         <VCardText>
           <VForm ref="refVForm"
-            @submit.prevent="onSubmit">
+                 @submit.prevent="onSubmit">
             <VRow>
               <!-- mobile -->
               <VCol cols="12">
