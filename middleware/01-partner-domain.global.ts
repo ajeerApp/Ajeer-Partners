@@ -7,15 +7,17 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const routeSubDomain = to.params.subdomain;
   const subDomain = getSubDomain();
   console.log('routeSubDomain is',routeSubDomain , 'subDomain is',subDomain );
-  if (!subDomain || !isValidSubdomain(subDomain, routeSubDomain)) {
+  if (!subDomain || !isValidSubdomain(subDomain)) {
     console.log('partner domain is not Valid',);
     throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
   }
 });
 
-function isValidSubdomain(subDomain, routeSubDomain) {
+function isValidSubdomain(subDomain) {
   const partner = partnerInfo();
   // TODO, send request to endpoint to get all partners domains, for checking
   const validSubdomains = ['saudiceramics', 'test1'];
-  return validSubdomains.includes(subDomain) && subDomain === routeSubDomain;
+  return validSubdomains.includes(subDomain);
 }
+// saudiceramics
+// saudiceramics
