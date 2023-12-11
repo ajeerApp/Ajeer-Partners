@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="landing-page">
-      <img src="@/assets/logo.png" alt="Company Logo" class="logo" />
+<!--      <img src="@/assets/logo.png" alt="Company Logo" class="logo" />-->
       <h1>{{ companyName }}</h1>
     </div>
   </div>
