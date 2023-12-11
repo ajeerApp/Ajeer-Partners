@@ -2,7 +2,7 @@
   <div id="app">
     <div class="landing-page">
 <!--      <img src="@/assets/logo.png" alt="Company Logo" class="logo" />-->
-      <h1>{{ companyName }}</h1>
+      <h1> Welcome in Ajeer Partners </h1>
     </div>
   </div>
 </template>
@@ -10,7 +10,6 @@
 <script>
 export default {
   components: {
-    LandingPage,
   },
 };
 </script>

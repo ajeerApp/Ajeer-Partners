@@ -11,6 +11,7 @@ import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
+import { getSubDomain } from '@/utils/sub-domain';
 
 import { useAuth } from '~/stores/auth';
 import { ref, computed } from 'vue';
@@ -36,6 +37,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 const checkbox = ref(false);
 const router = useRouter();
 const authStore = useAuth();
+const subDomain = getSubDomain();
 
 const mobile = ref("501234567");
 
@@ -46,7 +48,7 @@ const login = async () => {
     await authStore.login({
       mobile: mobile.value,
     });
-    router.push('/');
+    router.push(`create-order`);
   } catch (error) {
     console.error(error);
   }
