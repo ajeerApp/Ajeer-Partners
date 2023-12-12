@@ -5,9 +5,7 @@ import {useI18n} from 'vue-i18n'
 import Error from '../error.vue'
 import { useLocationStore } from '@/stores/location';
 
-// definePageMeta({
-//   middleware: 'auth'
-// })
+const refVForm = ref()
 const locationStore=useLocationStore()
 const i18n =useI18n()
 const fawriIcon = useGenerateImageVariant(fawriIconImage)
@@ -18,6 +16,7 @@ const orders=ref([])
 const errorObject=ref({
   status:false
 })
+const isValidForm=ref(false)
 const mapMarkers=ref([ locationStore.getLocation])
 // const fullDate=null
 
@@ -44,25 +43,78 @@ const iconsSteps = [
 const currentStep = ref(0)
 const isFawri = ref(true)
 const isCPasswordVisible = ref(false)
-
+const isActiveStepValidValue=ref(true)
 const formData = ref({
   order:null,
   date:null,
   time:null
 })
 
-
+const errors = ref({
+  order: undefined,
+  date: undefined,
+})
 const onSubmit = () => {
   //assign date and time
-  assignDate()
+  refVForm.value?.validate().then(({ valid: isValid }) => {
+    if (isValid)
+    isValidForm.value=true
+     assignDate()
+  })
   console.log("formData",formData.value)
 }
+// const validateForm=()=>{
+//   // console.log("call validateForm",refVForm.value)
+//   refVForm.value?.validate().then(({ valid: isValid }) => {
+//     console.log("isValid",isValid)
+//     if (isValid||isFawri.value==true){
+//       isValidForm.value=true
+//     }
+//     else if(isValid==false) {
+//     isValidForm.value=false
+//     isActiveStepValidValue.value=false
+//     }
+//     console.log("isActiveStepValid",isActiveStepValidValue.value)
+   
+//   }
+//   )
+// }
+
+//validation
+const checkValueForValidation=(value)=>{
+  if(value){
+    console.log("value",value)
+  isValidForm.value=true
+  isActiveStepValidValue.value=true
+}
+else {
+  isValidForm.value=false
+  isActiveStepValidValue.value=false
+}
+}
+watch(()=>formData.value.order,()=>{
+  checkValueForValidation(formData.value.order)
+})
+watch(()=>isFawri.value==false,()=>{
+  refVForm.value?.validate().then(({ valid: isValid }) => {
+  })
+  checkValueForValidation(formData.value.date)
+})
+watch(()=>formData.value.date,()=>{
+  checkValueForValidation(formData.value.order)
+})
+
+//  watch(()=>callValue,()=>{
+//   checkValueForValidation(callValue)
+// })
+
 
 //set place in using search places input
 const setPlace=(place) =>{
         let location = place.geometry.location;
         center.value = location;
         mapMarkers.value = [location];
+        console.log("place",place)
     }
 
 //assign date and time
@@ -145,14 +197,15 @@ const getCurrentTime=()=> {
 <div v-if="errorObject.status==false">
     <!-- 👉 Stepper -->
     <div class="mb-6">
-    <AppStepper v-model:current-step="currentStep" :items="iconsSteps" />
+    <AppStepper v-model:current-step="currentStep" :items="iconsSteps" :isActiveStepValid="isActiveStepValidValue"/>
   </div>
   <VCol cols="12" sm="6" md="6" :style="'margin:auto'">
     <VCard>
       <VCardText>
         <!-- 👉 stepper content -->
-        <VForm>
-          <VWindow v-model="currentStep" class="disable-tab-transition">
+        <VForm   ref="refVForm"
+            >
+          <VWindow v-model="currentStep" class="disable-tab-transition" >
             <VWindowItem>
               <VRow>
                 <VCol cols="12">
@@ -166,7 +219,15 @@ const getCurrentTime=()=> {
 
 
                 <VCol cols="12" md="12">
-                  <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="orders" />
+                  <!-- <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="orders" /> -->
+                  <AppTextField
+                  v-model="formData.order"
+                  :label="$t('Order')"
+                  :rules="[requiredValidator]"
+                  :type="number"
+                  :error-messages="errors.order"
+                />
+
                 </VCol>
 
 
@@ -187,7 +248,7 @@ const getCurrentTime=()=> {
                   <VRow>
                     <VCol cols="12" md="6">
                       <VRadioGroup class="time-bar" :class="[isFawri ? 'active-style' : '']" for="on-demand"
-                        @click="isFawri = true">
+                        @click="isFawri = true" >
                         <VRow>
                           <VCol cols="2">
                             <img class="img-bar" :src="fawriIcon" alt="fawri">
@@ -204,7 +265,7 @@ const getCurrentTime=()=> {
 
 
                     <VCol cols="12" md="6">
-                      <VRadioGroup class="time-bar" for="calendar" @click="isFawri = false"
+                      <VRadioGroup class="time-bar" for="calendar" @click="isFawri = false;" 
                         :class="[!isFawri ? 'active-style' : '']">
                         <span class="filter">
                           <VRow>
@@ -224,7 +285,8 @@ const getCurrentTime=()=> {
               </VRow>
               <VRow class="d-flex justify-center">
                 <AppDateTimePicker v-model="formData.date" :placeholder="$t('Select Date and time')"
-                  :config="{ enableTime: true, dateFormat: 'Y-m-d h:i:s K', inline: true ,useSeconds:true}" v-if="!isFawri" />
+                  :config="{ enableTime: true, dateFormat: 'Y-m-d h:i:s K', inline: true ,useSeconds:true}" v-if="!isFawri" :rules="[requiredValidator]"
+                  :error-messages="errors.date"  />
               </VRow>
             </VWindowItem>
 
@@ -249,6 +311,7 @@ const getCurrentTime=()=> {
       :zoom="15"
       map-type-id="terrain"
       style="width:100%; height: 400px"
+      @click="setMarker"
   >
   <GMapMarker
         v-for="(marker, index) in mapMarkers"
@@ -256,9 +319,6 @@ const getCurrentTime=()=> {
         :position="marker"
         :clickable="true"
         :draggable="true"
-        @click="center=m"
-
-
       />
   </GMapMap>
                 </VCol>
@@ -276,12 +336,11 @@ const getCurrentTime=()=> {
               {{ $t("Previous") }}
             </VBtn>
 
-            <VBtn v-if="iconsSteps.length - 1 === currentStep" color="success" append-icon="tabler-check"
-              @click="onSubmit">
+            <VBtn v-if="iconsSteps.length - 1 === currentStep" color="success" append-icon="tabler-check" @click="onSubmit">
               {{ $t("Place Order") }}
             </VBtn>
 
-            <VBtn v-else @click="currentStep++">
+            <VBtn v-else @click="currentStep++" :disabled="!isValidForm">
               {{ $t("Next") }}
 
               <VIcon icon="tabler-arrow-right" end class="flip-in-rtl" />

@@ -143,7 +143,7 @@ const onSubmit = () => {
           </VRow>
 
           <h4 class="text-h4 mb-1">
-            {{ $t("Welcome to") }} <span class="text-capitalize">{{themeConfig.app.title}}</span>! 👋🏻
+            {{ $t("Welcome to ajeer partners") }}  👋🏻
           </h4>
           <p class="mb-0">
             {{ $t("Please enter your mobile number") }}
