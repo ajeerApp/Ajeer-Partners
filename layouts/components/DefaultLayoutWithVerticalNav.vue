@@ -46,9 +46,9 @@ import { VerticalNavLayout } from '@layouts'
     <slot />
 
     <!-- 👉 Footer -->
-    <template #footer>
-      <Footer />
-    </template>
+<!--    <template #footer>-->
+<!--      <Footer />-->
+<!--    </template>-->
 
     <!-- 👉 Customizer -->
     <!-- <TheCustomizer /> -->

@@ -42,9 +42,9 @@ import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
     <slot />
 
     <!-- 👉 Footer -->
-    <template #footer>
-      <Footer />
-    </template>
+<!--    <template #footer>-->
+<!--      <Footer />-->
+<!--    </template>-->
 
     <!-- 👉 Customizer -->
     <!-- <TheCustomizer /> -->
