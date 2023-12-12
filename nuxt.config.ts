@@ -44,7 +44,7 @@ export default defineNuxtConfig({
       '@/plugins/vuetify/index.js',
       '@/plugins/iconify/index.js',
       '@/plugins/vue-google-maps.js',
-      '~/plugins/ofetch.ts'
+      '@/plugins/ofetch.ts'
   ],
 
   imports: {

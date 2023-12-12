@@ -1,10 +1,12 @@
 import { isAuthenticated } from '@/utils/auth-user';
 import {useRouter} from "vue-router";
 import { getSubDomain } from '@/utils/sub-domain';
+// const { $ofetch } = useNuxtApp()
 
 // gst, is login or auth page , in general it is for auth user
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  // Get the user's intended destination route
+  const nuxtApp = useNuxtApp()
+    // Get the user's intended destination route
   const destRoute = to.path;
   const subDomain = getSubDomain();
   console.log('auth middleware isAuthenticated()', isAuthenticated());
