@@ -3,10 +3,13 @@ import { useAuth } from '@/stores/auth';
 export function isAuthenticated() {
      // must define authStore for every export function
   const auth = useAuth();
+  auth.initializeFromStorage();
   return auth.isLoggedIn;
 }
 
 export function getAuthUserToken() {
   const auth = useAuth();
-    return auth.getAccessToken;
+  auth.initializeFromStorage();
+  return auth.getAccessToken;
 }
+

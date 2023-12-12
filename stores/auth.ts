@@ -1,74 +1,98 @@
 import { defineStore } from 'pinia';
-import { storeToRefs } from 'pinia'
-import { getSubDomain } from '@/utils/sub-domain';
+const TOKEN_STORE_NAME = 'tokenData';
+const USER_STORE_NAME = 'userData';
+
+interface AuthUser {
+  name: string;
+  mobile: string;
+  otp: string;
+}
+
+interface tokenInfo {
+  access_token: string;
+  token_type: string;
+  expires_at: string;
+}
 
 interface AuthState {
-  user: {
-    mobile: string;
-    otp: string;
-    type: string;
-    pushwoosh_token: string;
-    firebase_token: string;
-    device: string;
-    app_version: string;
-  } | null;
-  access_token: null;
+  user: AuthUser | null;
+  token: tokenInfo | null;
 }
 
 export const useAuth = defineStore('auth', {
   state: (): AuthState => ({
     user: null,
-    access_token: null,
+    token: null,
   }),
   getters: {
-    isLoggedIn(state) : boolean {
-      console.log('isLoggedIn getter, this access_token state', state.access_token);
-      const loggegedIn = state.user && (state.access_token !== null && state.access_token !== undefined);
-      console.log('state user in isLoggedIn', state.user);
-      console.log('loggegedIn in isLoggedIn', loggegedIn);
-      return loggegedIn;
+    isLoggedIn(state): boolean {
+      // this.initializeFromStorage();
+      return !!state.token && !!state.token.access_token;
     },
-    getAccessToken(state): string | null {
-      return state.user ? state.user.access_token : null;
+    getAccessToken(state) {
+      return state.token ? state.token.access_token : null;
+    },
+    getUserData(state) {
+      return state.user ? state.user : null;
     },
   },
   actions: {
 
+    initializeFromStorage() {
+        console.log('thi is initializeFromStorage');
+        if (process.client && localStorage.getItem(TOKEN_STORE_NAME)) {
+              const tokenData = JSON.parse(localStorage.getItem(TOKEN_STORE_NAME));
+              const  userdData = JSON.parse(localStorage.getItem(USER_STORE_NAME));
+              console.log('tokenData', tokenData);
+              if (tokenData) {
+                this.$patch({ token: tokenData });
+              }
+              if (userdData) {
+               this.$patch({ user: userdData });
+              }
+        }
+    },
+
     async login(payload: { mobile: string;}) {
       const config = useRuntimeConfig()
       const nuxtApp = useNuxtApp()
-      console.log('login action before send, this access_token state', this.access_token);
       const response = await nuxtApp.$apiFetch(`/users/check`, {
         method: 'POST',
         params: {
           mobile: payload.mobile,
         }
       });
-      const res = response;
-      const resData = res.data;
-      const Token = resData.access_token;
-      console.log('thi is login res', res);
-      if (res.success === true) {
-        console.log('login res.success === true');
-        // this.access_token = Token;
-        this.$patch({
-          user: {
-            ...resData.user,
-          },
-          access_token: Token
-        });
-        console.log('login action , this access_token', this.access_token);
-        console.log('login action this user', this.user);
+      const resData = response.data;
+      console.log('thi is login resData', resData);
+      if (response.success === true) {
+        const userMappedData: AuthUser = {
+          name: resData.user.name,
+          mobile: resData.user.mobile,
+          otp: resData.user.otp,
+        };
+
+        const tokenData = {
+          access_token: resData.access_token,
+          token_type: resData.token_type,
+          expires_at: resData.expires_at,
+        }
+
+        this.$patch({ user: userMappedData });
+        localStorage.setItem(TOKEN_STORE_NAME, JSON.stringify(tokenData));
+        localStorage.setItem(USER_STORE_NAME, JSON.stringify(userMappedData));
+        const sttokenData = localStorage.getItem(TOKEN_STORE_NAME);
+        console.log('thi is login sttokenData',sttokenData);
       } else {
         throw new Error('Login failed');
       }
     },
 
-    logout() { // not used yet
-      this.user = null;
-      this.user = null;
-      this.access_token = null;
+    logout() {
+      this.$patch({
+        user: null,
+      });
+      localStorage.removeItem(TOKEN_STORE_NAME);
     },
-
   },
 });
+

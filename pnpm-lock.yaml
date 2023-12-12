@@ -91,6 +91,9 @@ dependencies:
   next-auth:
     specifier: 4.21.1
     version: 4.21.1(next@13.5.6)(react-dom@18.2.0)(react@18.2.0)
+  nuxt-storage:
+    specifier: ^1.2.2
+    version: 1.2.2
   ofetch:
     specifier: ^1.3.3
     version: 1.3.3
@@ -8035,6 +8038,10 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
+
+  /nuxt-storage@1.2.2:
+    resolution: {integrity: sha512-quJbZ87NO7QRCSp7YZolot6VwktciSLuTS/sRl8NPz5rAWA84U5Py0y9FmAsbKTiaqJtFcCKSaJGzky948jA3w==}
+    dev: false
 
   /nuxt@3.8.1(eslint@8.53.0)(sass@1.69.5)(stylelint@15.11.0)(typescript@5.2.2)(vite@4.5.0):
     resolution: {integrity: sha512-RSGO56Gv0x2f6AXWw4o4GoBaVdsD0qkPCjrX7Ud/jzH3cRJoyYMPuq/9AOLvf2o1ecZWl39j5elqJ4QHmggyOA==}
