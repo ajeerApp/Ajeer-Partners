@@ -39,11 +39,9 @@ export const useAuth = defineStore('auth', {
   actions: {
 
     initializeFromStorage() {
-        console.log('thi is initializeFromStorage');
         if (process.client && localStorage.getItem(TOKEN_STORE_NAME)) {
               const tokenData = JSON.parse(localStorage.getItem(TOKEN_STORE_NAME));
               const  userdData = JSON.parse(localStorage.getItem(USER_STORE_NAME));
-              console.log('tokenData', tokenData);
               if (tokenData) {
                 this.$patch({ token: tokenData });
               }
@@ -80,8 +78,6 @@ export const useAuth = defineStore('auth', {
         this.$patch({ user: userMappedData });
         localStorage.setItem(TOKEN_STORE_NAME, JSON.stringify(tokenData));
         localStorage.setItem(USER_STORE_NAME, JSON.stringify(userMappedData));
-        const sttokenData = localStorage.getItem(TOKEN_STORE_NAME);
-        console.log('thi is login sttokenData',sttokenData);
       } else {
         throw new Error('Login failed');
       }
