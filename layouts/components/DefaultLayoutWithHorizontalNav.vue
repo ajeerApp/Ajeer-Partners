@@ -33,18 +33,18 @@ import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
       />
 
       <NavbarThemeSwitcher class="me-2" />
-      <UserProfile />
+<!--      <UserProfile />-->
     </template>
 
-    
+
 
     <!-- 👉 Pages -->
     <slot />
 
     <!-- 👉 Footer -->
-    <template #footer>
-      <Footer />
-    </template>
+<!--    <template #footer>-->
+<!--      <Footer />-->
+<!--    </template>-->
 
     <!-- 👉 Customizer -->
     <!-- <TheCustomizer /> -->
