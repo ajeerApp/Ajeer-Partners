@@ -1,59 +1,98 @@
 import { defineStore } from 'pinia';
+const TOKEN_STORE_NAME = 'tokenData';
+const USER_STORE_NAME = 'userData';
+
+interface AuthUser {
+  name: string;
+  mobile: string;
+  otp: string;
+}
+
+interface tokenInfo {
+  access_token: string;
+  token_type: string;
+  expires_at: string;
+}
 
 interface AuthState {
-    user: {
-        mobile: string;
-        otp: string;
-        type: string;
-        pushwoosh_token: string;
-        firebase_token: string;
-        device: string;
-        app_version: string;
-        access_token: string;
-    } | null;
+  user: AuthUser | null;
+  token: tokenInfo | null;
 }
 
 export const useAuth = defineStore('auth', {
-    state: (): AuthState => ({
+  state: (): AuthState => ({
+    user: null,
+    token: null,
+  }),
+  getters: {
+    isLoggedIn(state): boolean {
+      // this.initializeFromStorage();
+      return !!state.token && !!state.token.access_token;
+    },
+    getAccessToken(state) {
+      return state.token ? state.token.access_token : null;
+    },
+    getUserData(state) {
+      return state.user ? state.user : null;
+    },
+  },
+  actions: {
+
+    initializeFromStorage() {
+        console.log('thi is initializeFromStorage');
+        if (process.client && localStorage.getItem(TOKEN_STORE_NAME)) {
+              const tokenData = JSON.parse(localStorage.getItem(TOKEN_STORE_NAME));
+              const  userdData = JSON.parse(localStorage.getItem(USER_STORE_NAME));
+              console.log('tokenData', tokenData);
+              if (tokenData) {
+                this.$patch({ token: tokenData });
+              }
+              if (userdData) {
+               this.$patch({ user: userdData });
+              }
+        }
+    },
+
+    async login(payload: { mobile: string;}) {
+      const config = useRuntimeConfig()
+      const nuxtApp = useNuxtApp()
+      const response = await nuxtApp.$apiFetch(`/users/check`, {
+        method: 'POST',
+        params: {
+          mobile: payload.mobile,
+        }
+      });
+      const resData = response.data;
+      console.log('thi is login resData', resData);
+      if (response.success === true) {
+        const userMappedData: AuthUser = {
+          name: resData.user.name,
+          mobile: resData.user.mobile,
+          otp: resData.user.otp,
+        };
+
+        const tokenData = {
+          access_token: resData.access_token,
+          token_type: resData.token_type,
+          expires_at: resData.expires_at,
+        }
+
+        this.$patch({ user: userMappedData });
+        localStorage.setItem(TOKEN_STORE_NAME, JSON.stringify(tokenData));
+        localStorage.setItem(USER_STORE_NAME, JSON.stringify(userMappedData));
+        const sttokenData = localStorage.getItem(TOKEN_STORE_NAME);
+        console.log('thi is login sttokenData',sttokenData);
+      } else {
+        throw new Error('Login failed');
+      }
+    },
+
+    logout() {
+      this.$patch({
         user: null,
-    }),
-    getters: {
-        isLoggedIn(state): boolean {
-            return state.user && (state.user.access_token !== null && state.user.access_token !== undefined);
-        },
-        getAccessToken(state): string | null {
-            return state.user ? state.user.access_token : null;
-        },
+      });
+      localStorage.removeItem(TOKEN_STORE_NAME);
     },
-    actions: {
-        async login(payload: { mobile: string;}) {
-                const config = useRuntimeConfig()
-                // TODO, get partner_domain from request
-                const response = await $fetch(`${config.public.apiBase}saudiceramics/users/check`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
-            const res = response; // according to response
-            const resData = res.data;
-            const Token = resData.access_token;
-            console.log('thi is login res', res);
-            if (res.success === true) {
-                console.log('login res.success === true');
-                this.user = resData.user;
-                this.user.access_token = Token;
-                console.log('this user', this.user);
-            } else {
-                throw new Error('Login failed');
-            }
-        },
-
-        logout() { // not used yet
-            this.user = null;
-            this.user.access_token = null;
-        },
-
-    },
+  },
 });
+
