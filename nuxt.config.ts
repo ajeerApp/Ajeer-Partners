@@ -144,12 +144,13 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // The private keys which are only available server-side
     securityApi: '123456789', // will overwrite when runtime by .env NUXT_SECURITY_API value
-    googleMapKey: 'AIzaSyDIfHvUwp5JuGnAO6LP7yu_iK0ntHuH8to',
     // Keys within public are also exposed client-side
     public: {
       apiBase: 'https://mafak.stg.iajeer.com/api/v1/partners/',
       ajeerDashboardUrl: process.env.NUXT_PUBLIC_AJEER_DASHBOARD_URL,
       appUrl: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3003',
+      googleMapKey: process.env.NUXT_PUBLIC_GOOGLE_MAP_API_KEY,
+
     }
   }, // runtimeConfig
 
