@@ -33,10 +33,10 @@ import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
       />
 
       <NavbarThemeSwitcher class="me-2" />
-      <UserProfile />
+<!--      <UserProfile />-->
     </template>
 
-    
+
 
     <!-- 👉 Pages -->
     <slot />

@@ -36,11 +36,11 @@ import { VerticalNavLayout } from '@layouts'
           v-if="themeConfig.app.i18n.enable && themeConfig.app.i18n.langConfig?.length"
           :languages="themeConfig.app.i18n.langConfig"
         />
-        <UserProfile />
+<!--        <UserProfile />-->
       </div>
     </template>
 
-    
+
 
     <!-- 👉 Pages -->
     <slot />
