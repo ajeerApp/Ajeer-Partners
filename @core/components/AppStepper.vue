@@ -33,7 +33,6 @@ const props = defineProps({
     default: 'center',
   },
 })
-
 const emit = defineEmits(['update:currentStep'])
 
 const currentStep = ref(props.currentStep || 0)
@@ -71,10 +70,11 @@ watchEffect(() => {
           (!props.isActiveStepValid && (isValidationEnabled)) && 'stepper-steps-invalid',
           activeOrCompletedStepsClasses(index),
         ]"
-        @click="!isValidationEnabled && emit('update:currentStep', index)"
+        @click="props.isActiveStepValid  && emit('update:currentStep', index)"
       >
         <!-- SECTION stepper step with icon -->
-        <template v-if="item.icon">
+        <template v-if="item.icon" 
+        >
           <div class="stepper-icon-step text-high-emphasis d-flex align-center gap-2">
             <!-- 👉 icon and title -->
             <div
