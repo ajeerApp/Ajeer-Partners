@@ -17,7 +17,7 @@ import { VerticalNavLayout } from '@layouts'
     <!-- 👉 navbar -->
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center">
-        <IconBtn
+        <!-- <IconBtn
           id="vertical-nav-toggle-btn"
           class="ms-n3 d-lg-none"
           @click="toggleVerticalOverlayNavActive(true)"
@@ -26,7 +26,7 @@ import { VerticalNavLayout } from '@layouts'
             size="26"
             icon="tabler-menu-2"
           />
-        </IconBtn>
+        </IconBtn> -->
 
         <NavbarThemeSwitcher />
 
