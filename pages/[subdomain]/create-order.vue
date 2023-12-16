@@ -1,23 +1,22 @@
 <script setup>
 import fawriIconImage from '@images/icons/order-types/fawri.svg'
 import scheduledIconImage from '@images/icons/order-types/scheduled.svg'
-import {useI18n} from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 import Error from '../error.vue'
 import { useLocationStore } from '@/stores/location';
 
 const refVForm = ref()
-const locationStore=useLocationStore()
-const i18n =useI18n()
+const locationStore = useLocationStore()
+const i18n = useI18n()
 const fawriIcon = useGenerateImageVariant(fawriIconImage)
 const scheduledIcon = useGenerateImageVariant(scheduledIconImage)
 const center = ref(locationStore.getLocation);
-const api = useRuntimeConfig().public.apiBaseUrl
-const orders=ref([])
-const errorObject=ref({
-  status:false
+const errorObject = ref({
+  status: false
 })
-const isValidForm=ref(false)
-const mapMarkers=ref([ locationStore.getLocation])
+const isValidForm = ref(false)
+const mapMarkers = ref([locationStore.getLocation])
+
 // const fullDate=null
 
 const iconsSteps = [
@@ -26,7 +25,7 @@ const iconsSteps = [
     icon: 'custom-address',
   },
   {
-    title:i18n.t("Choose Date"),
+    title: i18n.t("Choose Date"),
     icon: 'custom-wizard-social-link',
   },
   {
@@ -43,11 +42,12 @@ const iconsSteps = [
 const currentStep = ref(0)
 const isFawri = ref(true)
 const isCPasswordVisible = ref(false)
-const isActiveStepValidValue=ref(true)
+const isActiveStepValidValue = ref(true)
 const formData = ref({
-  order:null,
-  date:null,
-  time:null
+  order: null,
+  date: null,
+  time: null,
+  location:null
 })
 
 const errors = ref({
@@ -58,100 +58,89 @@ const onSubmit = () => {
   //assign date and time
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid)
-    isValidForm.value=true
-     assignDate()
+      isValidForm.value = true
+    assignDate()
   })
-  console.log("formData",formData.value)
 }
-// const validateForm=()=>{
-//   // console.log("call validateForm",refVForm.value)
-//   refVForm.value?.validate().then(({ valid: isValid }) => {
-//     console.log("isValid",isValid)
-//     if (isValid||isFawri.value==true){
-//       isValidForm.value=true
-//     }
-//     else if(isValid==false) {
-//     isValidForm.value=false
-//     isActiveStepValidValue.value=false
-//     }
-//     console.log("isActiveStepValid",isActiveStepValidValue.value)
-   
-//   }
-//   )
-// }
+
 
 //validation
-const checkValueForValidation=(value)=>{
-  if(value){
-    console.log("value",value)
-  isValidForm.value=true
-  isActiveStepValidValue.value=true
+const checkValueForValidation = (value) => {
+  if (value) {
+    isValidForm.value = true
+    isActiveStepValidValue.value = true
+    return true
+  }
+  else {
+    isValidForm.value = false
+    isActiveStepValidValue.value = false
+  return false;
+    
+  }
+
 }
-else {
-  isValidForm.value=false
-  isActiveStepValidValue.value=false
-}
-}
-watch(()=>formData.value.order,()=>{
-  checkValueForValidation(formData.value.order)
+watch(() => formData.value.order, () => {
+  if(checkValueForValidation(formData.value.order)){
+    orderPreviewData.value[0].data=formData.value.order
+  }
 })
-watch(()=>isFawri.value==false,()=>{
+watch(() => isFawri.value == false, () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
   })
-  checkValueForValidation(formData.value.date)
+  
 })
-watch(()=>formData.value.date,()=>{
-  checkValueForValidation(formData.value.order)
+watch(() => formData.value.date, () => {
+  if(checkValueForValidation(formData.value.date)){
+    assignDate()
+    orderPreviewData.value[1].data=formData.value.date 
+  }
 })
 
-//  watch(()=>callValue,()=>{
-//   checkValueForValidation(callValue)
-// })
 
 
 //set place in using search places input
-const setPlace=(place) =>{
-        let location = place.geometry.location;
-        center.value = location;
-        mapMarkers.value = [location];
-        console.log("place",place)
-    }
+const setPlace = (place) => {
+  let location = place.geometry.location;
+  center.value = location;
+  mapMarkers.value = [location];
+  console.log("place", place)
+}
 
 //assign date and time
-const assignDate=()=>{
+const assignDate = () => {
   if (isFawri.value) {
     const todayDate = new Date();
-    formData.value.date= getDateFormat(todayDate);
-    formData.value.time=getCurrentTime()
+    formData.value.date = getDateFormat(todayDate);
+    formData.value.time = getCurrentTime()
   }
   else {
-var date=formData.value.date
-formData.value.date=formData.value.date.substring(0,formData.value.date.indexOf(' '))
-formData.value.time=date.substring(date.indexOf(' ') + 1)
+    var date = formData.value.date
+    formData.value.date = formData.value.date.substring(0, formData.value.date.indexOf(' '))
+    formData.value.time = date.substring(date.indexOf(' ') + 1)
 
-console.log("formData.value.time",formData.value.time)
+    console.log("formData.value.time", formData.value.time)
   }
 }
 /**
  * get date format of yyyy-mm-dd
  * @param date in calender
  */
-const getDateFormat=(date)=>{
-    var d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
+const getDateFormat = (date) => {
+  var d = new Date(date),
+    month = '' + (d.getMonth() + 1),
+    day = '' + d.getDate(),
+    year = d.getFullYear();
 
-    if (month.length < 2)
-        month = '0' + month;
-    if (day.length < 2)
-        day = '0' + day;
+  if (month.length < 2)
+    month = '0' + month;
+  if (day.length < 2)
+    day = '0' + day;
 
-    return [year, month, day].join('-');
+  return [year, month, day].join('-');
 }
 
 //get currenct time
-const getCurrentTime=()=> {
+const getCurrentTime = () => {
   const now = new Date();
   let hours = now.getHours();
   let minutes = now.getMinutes();
@@ -170,190 +159,210 @@ const getCurrentTime=()=> {
 
   return formattedTime;
 }
-//call api on component mount
-//  onMounted(async ()=>{
-//   try {
-//     const response = await fetch(`${api}/orders`)
-//     if (response.ok) {
-//       const data = await response.json();
-//       console.log('result',data)
-//        for(var i=0;i<data.length;i++){
-//         orders.value.push(data[i].id)
-//        }
-//     } else {
-//       console.error('Error checking:', response.statusText);
-//     }
-//   } catch (error) {
-//     errorObject.value.status=true;
-//     errorObject.value={
-//       "statusCode":500,
-//     }
 
-//   }
-// })
+const orderPreviewData= ref([
+  {
+    title:'Order',
+    data:null,
+    icon: 'tabler-number',
+    color: 'primary',
+  },
+  {
+    title:'Date',
+    data:null,
+    icon: 'tabler-calendar-event',
+    color: 'info',
+  },
+  {
+    title:'Location',
+    data:center.value,
+    icon: 'tabler-map-pin-filled',
+    color: 'success',
+  },
+])
 </script>
 
 <template>
-<div v-if="errorObject.status==false">
+  <div v-if="errorObject.status == false">
     <!-- 👉 Stepper -->
     <div class="mb-6">
-    <AppStepper v-model:current-step="currentStep" :items="iconsSteps" :isActiveStepValid="isActiveStepValidValue"/>
-  </div>
-  <VCol cols="12" sm="6" md="6" :style="'margin:auto'">
-    <VCard>
-      <VCardText>
-        <!-- 👉 stepper content -->
-        <VForm   ref="refVForm"
-            >
-          <VWindow v-model="currentStep" class="disable-tab-transition" >
-            <VWindowItem>
-              <VRow>
-                <VCol cols="12">
-                  <h6 class="text-h6 font-weight-medium">
-                    {{ $t("Order Details") }}
-                  </h6>
-                  <p class="mb-0">
-                   {{ $t("Enter your Order Details") }}
-                  </p>
-                </VCol>
+      <AppStepper v-model:current-step="currentStep" :items="iconsSteps" :isActiveStepValid="isActiveStepValidValue" />
+    </div>
+    <VCol cols="12" sm="6" md="6" :style="'margin:auto'">
+      <VCard>
+        <VCardText>
+          <!-- 👉 stepper content -->
+          <VForm ref="refVForm">
+            <VWindow v-model="currentStep" class="disable-tab-transition">
+              <VWindowItem>
+                <VRow>
+                  <VCol cols="12">
+                    <h6 class="text-h6 font-weight-medium">
+                      {{ $t("Order Details") }}
+                    </h6>
+                    <p class="mb-0">
+                      {{ $t("Enter your Order Details") }}
+                    </p>
+                  </VCol>
 
 
-                <VCol cols="12" md="12">
-                  <!-- <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="orders" /> -->
-                  <AppTextField
-                  v-model="formData.order"
-                  :label="$t('Order')"
-                  :rules="[requiredValidator]"
-                  :type="number"
-                  :error-messages="errors.order"
-                />
+                  <VCol cols="12" md="12">
+                    <!-- <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="orders" /> -->
+                    <AppTextField v-model="formData.order" :label="$t('Order')" :rules="[requiredValidator]"
+                      :type="number" :error-messages="errors.order" />
 
-                </VCol>
+                  </VCol>
 
 
-              </VRow>
-            </VWindowItem>
+                </VRow>
+              </VWindowItem>
 
-            <VWindowItem>
-              <VRow>
-                <VCol cols="12">
-                  <h6 class="text-h6 font-weight-medium">
-                    {{ $t("Choose Date") }}
-                  </h6>
-                  <p class="mb-0">
-                    {{ $t("Setup Date") }}
-                  </p>
-                </VCol>
-                <VCol cols="12" >
-                  <VRow>
-                    <VCol cols="12" md="6">
-                      <VRadioGroup class="time-bar" :class="[isFawri ? 'active-style' : '']" for="on-demand"
-                        @click="isFawri = true" >
-                        <VRow>
-                          <VCol cols="2">
-                            <img class="img-bar" :src="fawriIcon" alt="fawri">
-                          </VCol>
-                          <VCol >
-                            <span class="text-middle">{{ $t("Fawri") }}</span>
-                          </VCol>
-                        </VRow>
-                        <span class="filter">
-
-                        </span>
-                      </VRadioGroup>
-                    </VCol>
-
-
-                    <VCol cols="12" md="6">
-                      <VRadioGroup class="time-bar" for="calendar" @click="isFawri = false;" 
-                        :class="[!isFawri ? 'active-style' : '']">
-                        <span class="filter">
+              <VWindowItem>
+                <VRow>
+                  <VCol cols="12">
+                    <h6 class="text-h6 font-weight-medium">
+                      {{ $t("Choose Date") }}
+                    </h6>
+                    <p class="mb-0">
+                      {{ $t("Setup Date") }}
+                    </p>
+                  </VCol>
+                  <VCol cols="12">
+                    <VRow>
+                      <VCol cols="12" md="6">
+                        <VRadioGroup class="time-bar" :class="[isFawri ? 'active-style' : '']" for="on-demand"
+                          @click="isFawri = true">
                           <VRow>
                             <VCol cols="2">
-                              <img class="img-bar" :src="scheduledIcon" alt="home.scheduled">
+                              <img class="img-bar" :src="fawriIcon" alt="fawri">
                             </VCol>
                             <VCol>
-                              <span class="text-middle">{{ $t("Calender") }} </span>
-                              <!-- <span class="text-middle" ></span> -->
+                              <span class="text-middle">{{ $t("Fawri") }}</span>
                             </VCol>
                           </VRow>
-                        </span>
-                      </VRadioGroup>
-                    </VCol>
-                  </VRow>
-                </VCol>
-              </VRow>
-              <VRow class="d-flex justify-center">
-                <AppDateTimePicker v-model="formData.date" :placeholder="$t('Select Date and time')"
-                  :config="{ enableTime: true, dateFormat: 'Y-m-d h:i:s K', inline: true ,useSeconds:true}" v-if="!isFawri" :rules="[requiredValidator]"
-                  :error-messages="errors.date"  />
-              </VRow>
-            </VWindowItem>
+                          <span class="filter">
 
-            <VWindowItem>
-              <VRow>
-                <VCol cols="12">
-                  <h6 class="text-h6 font-weight-medium">
-                    {{ $t("Address") }}
-                  </h6>
-                </VCol>
-                <VCol cols="12" md="12">
-                  <GMapAutocomplete
-                  class="autocomplete-map"
-       :placeholder='$t("Enter or Choose Your Address.")'
-       @place_changed="setPlace"
-    >
-  </GMapAutocomplete>
-                </VCol>
-                <VCol cols="12" md="12">
-                  <GMapMap
-      :center="center"
-      :zoom="15"
-      map-type-id="terrain"
-      style="width:100%; height: 400px"
-      @click="setMarker"
-  >
-  <GMapMarker
-        v-for="(marker, index) in mapMarkers"
-        :key="index"
-        :position="marker"
-        :clickable="true"
-        :draggable="true"
-      />
-  </GMapMap>
-                </VCol>
-
-              </VRow>
-            </VWindowItem>
+                          </span>
+                        </VRadioGroup>
+                      </VCol>
 
 
+                      <VCol cols="12" md="6">
+                        <VRadioGroup class="time-bar" for="calendar" @click="isFawri = false;"
+                          :class="[!isFawri ? 'active-style' : '']">
+                          <span class="filter">
+                            <VRow>
+                              <VCol cols="2">
+                                <img class="img-bar" :src="scheduledIcon" alt="home.scheduled">
+                              </VCol>
+                              <VCol>
+                                <span class="text-middle">{{ $t("Calender") }} </span>
+                                <!-- <span class="text-middle" ></span> -->
+                              </VCol>
+                            </VRow>
+                          </span>
+                        </VRadioGroup>
+                      </VCol>
+                    </VRow>
+                  </VCol>
+                </VRow>
+                <VRow class="d-flex justify-center">
+                  <AppDateTimePicker v-model="formData.date" :placeholder="$t('Select Date and time')"
+                    :config="{ enableTime: true, dateFormat: 'Y-m-d h:i:s K', inline: true, useSeconds: true }"
+                    v-if="!isFawri" :rules="[requiredValidator]" :error-messages="errors.date" />
+                </VRow>
+              </VWindowItem>
 
-          </VWindow>
+              <VWindowItem>
+                <VRow>
+                  <VCol cols="12">
+                    <h6 class="text-h6 font-weight-medium">
+                      {{ $t("Address") }}
+                    </h6>
+                  </VCol>
+                  <VCol cols="12" md="12">
+                    <GMapAutocomplete class="autocomplete-map" :placeholder='$t("Enter or Choose Your Address.")'
+                      @place_changed="setPlace">
+                    </GMapAutocomplete>
+                  </VCol>
+                  <VCol cols="12" md="12">
+                    <GMapMap :center="center" :zoom="15" map-type-id="terrain" style="width:100%; height: 400px"
+                      @click="setMarker">
+                      <GMapMarker v-for="(marker, index) in mapMarkers" :key="index" :position="marker" :clickable="true"
+                        :draggable="true" />
+                    </GMapMap>
+                  </VCol>
 
-          <div class="d-flex flex-wrap gap-4 justify-sm-space-between justify-center mt-8">
-            <VBtn color="secondary" variant="tonal" :disabled="currentStep === 0" @click="currentStep--">
-              <VIcon icon="tabler-arrow-left" start class="flip-in-rtl" />
-              {{ $t("Previous") }}
-            </VBtn>
+                </VRow>
+              </VWindowItem>
 
-            <VBtn v-if="iconsSteps.length - 1 === currentStep" color="success" append-icon="tabler-check" @click="onSubmit">
-              {{ $t("Place Order") }}
-            </VBtn>
+              <!-- Review -->
+              <VWindowItem>
+                <VRow>
+                  <VCol cols="12" class="m-0 p-0">
+                      <VCardItem title="Order Preview">
+                        <template #append>
+                          <MoreBtn />
+                        </template>
+                      </VCardItem>
 
-            <VBtn v-else @click="currentStep++" :disabled="!isValidForm">
-              {{ $t("Next") }}
+                      <VCardText>
+                        <VList class="card-list">
+                          <VListItem v-for="(item, index) in orderPreviewData" :key="index">
+                            <template #prepend>
+                              <VAvatar rounded variant="tonal" :color="item.color">
+                                <VIcon :icon="item.icon" size="24" />
+                              </VAvatar>
+                            </template>
 
-              <VIcon icon="tabler-arrow-right" end class="flip-in-rtl" />
-            </VBtn>
-          </div>
-        </VForm>
-      </VCardText>
-    </VCard>
-  </VCol>
+                            <VListItemTitle class="me-4">
+                              <div class="d-flex flex-column">
+                                <div class="font-weight-medium text-truncate">
+                                  {{ item.title }}
+                                </div>
+                                <div>
+                                  <VChip variant="tonal" color="secondary" label>
+                                    {{ item.data }}
+                                  </VChip>
+                                </div>
+                              </div>
+                            </VListItemTitle>
+                          </VListItem>
+                        </VList>
+                      </VCardText>
+                  </VCol>
+                </VRow>
+
+
+              </VWindowItem>
+
+            </VWindow>
+
+            <div class="d-flex flex-wrap gap-4 justify-sm-space-between justify-center mt-8">
+              <VBtn color="secondary" variant="tonal" :disabled="currentStep === 0" @click="currentStep--">
+                <VIcon icon="tabler-arrow-left" start class="flip-in-rtl" />
+                {{ $t("Previous") }}
+              </VBtn>
+
+              <VBtn v-if="iconsSteps.length - 1 === currentStep" color="success" append-icon="tabler-check"
+                @click="onSubmit">
+                {{ $t("Place Order") }}
+              </VBtn>
+
+              <VBtn v-else @click="currentStep++" :disabled="!isValidForm">
+                {{ $t("Next") }}
+
+                <VIcon icon="tabler-arrow-right" end class="flip-in-rtl" />
+              </VBtn>
+            </div>
+          </VForm>
+        </VCardText>
+      </VCard>
+    </VCol>
 
     <!-- 👉 Get currenct location -->
-<GeoLocation/>
-</div>
+    <GeoLocation />
+  </div>
   <error :error="errorObject" v-else></error>
 </template>
 
@@ -417,7 +426,8 @@ input[type="radio"].radiobtn:hover+label>span>img {
   left: 5%;
   color: #b4b3b3;
 }
-.autocomplete-map{
+
+.autocomplete-map {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;

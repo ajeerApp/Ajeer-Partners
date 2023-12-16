@@ -98,13 +98,7 @@ const onSubmit = () => {
                 class="auth-illustration mb-2"
               />
             </VCol>
-            <!-- <VCol cols="3" >
-              <VImg
-              max-width="300"
-              :src="ajeerLogoBg"
-              class="auth-illustration mb-2"
-            />
-            </VCol> -->
+           
           </VRow>
         </div>
 

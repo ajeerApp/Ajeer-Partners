@@ -41,77 +41,24 @@ import avatar1 from '@images/avatars/avatar-1.png'
                     color="primary"
                     variant="tonal"
                   >
-                    <VImg :src="avatar1" />
+                    <!-- <VImg :src="avatar1" /> -->
                   </VAvatar>
                 </VBadge>
               </VListItemAction>
             </template>
 
             <VListItemTitle class="font-weight-semibold">
-              John Doe
+              <!-- John Doe -->
             </VListItemTitle>
-            <VListItemSubtitle>Admin</VListItemSubtitle>
+            <!-- <VListItemSubtitle>Admin</VListItemSubtitle> -->
           </VListItem>
 
           <VDivider class="my-2" />
 
-          <!-- 👉 Profile -->
-          <VListItem link>
-            <template #prepend>
-              <VIcon
-                class="me-2"
-                icon="tabler-user"
-                size="22"
-              />
-            </template>
 
-            <VListItemTitle>Profile</VListItemTitle>
-          </VListItem>
-
-          <!-- 👉 Settings -->
-          <VListItem link>
-            <template #prepend>
-              <VIcon
-                class="me-2"
-                icon="tabler-settings"
-                size="22"
-              />
-            </template>
-
-            <VListItemTitle>Settings</VListItemTitle>
-          </VListItem>
-
-          <!-- 👉 Pricing -->
-          <VListItem link>
-            <template #prepend>
-              <VIcon
-                class="me-2"
-                icon="tabler-currency-dollar"
-                size="22"
-              />
-            </template>
-
-            <VListItemTitle>Pricing</VListItemTitle>
-          </VListItem>
-
-          <!-- 👉 FAQ -->
-          <VListItem link>
-            <template #prepend>
-              <VIcon
-                class="me-2"
-                icon="tabler-help"
-                size="22"
-              />
-            </template>
-
-            <VListItemTitle>FAQ</VListItemTitle>
-          </VListItem>
-
-          <!-- Divider -->
-          <VDivider class="my-2" />
 
           <!-- 👉 Logout -->
-          <VListItem to="/login">
+          <VListItem to="/saudiceramics/gst">
             <template #prepend>
               <VIcon
                 class="me-2"

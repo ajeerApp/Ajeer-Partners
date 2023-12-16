@@ -41,7 +41,9 @@ export const partnerInfo = defineStore('partner', {
       const resData = res.data;
       console.log('thi is resData in partner info', resData);
       if (res.success === true) {
-        console.log('partner res.success === true');
+        if(subDomain){
+          localStorage.setItem("subdomain",subDomain)
+        }
         this.partner = resData.partner;
         console.log('thi partner domain', this.partner.domain );
         return this.partner;

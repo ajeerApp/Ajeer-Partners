@@ -4,6 +4,8 @@ import misc404 from '@images/pages/404.png'
 import miscMaskDark from '@images/pages/misc-mask-dark.png'
 import miscMaskLight from '@images/pages/misc-mask-light.png'
 
+const router = useRouter();
+const route = useRoute();
 const props = defineProps({
   error: {
     type: Object,
@@ -53,8 +55,15 @@ const errToShow = computed(() => {
     description: 'We are working on it and we\'ll get it fixed as soon as we can',
   }
 })
+// const subDomain = useCookie('subDomain')
 
-const handleError = () => clearError({ redirect: '/' })
+// watch(() => getSubDomain(), () => {
+// console.log("getSubDomain()",subDomain)
+// }, { immediate: true })
+
+const handleError = () => {
+  router.push(`/saudiceramics/gst`)
+}
 </script>
 
 <template>
