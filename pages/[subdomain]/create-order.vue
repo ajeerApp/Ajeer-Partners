@@ -16,7 +16,7 @@ const errorObject = ref({
 })
 const isValidForm = ref(false)
 const mapMarkers = ref([locationStore.getLocation])
-
+const orders=ref([1222,4445])
 // const fullDate=null
 
 const iconsSteps = [
@@ -43,11 +43,13 @@ const currentStep = ref(0)
 const isFawri = ref(true)
 const isCPasswordVisible = ref(false)
 const isActiveStepValidValue = ref(true)
+const defaultDateTime=ref(null)
 const formData = ref({
   order: null,
   date: null,
   time: null,
-  location:null
+  lat:null,
+  lng:null
 })
 
 const errors = ref({
@@ -79,22 +81,28 @@ const checkValueForValidation = (value) => {
   }
 
 }
+//these watchers are made for validation of inputs
+//validate order
 watch(() => formData.value.order, () => {
   if(checkValueForValidation(formData.value.order)){
     orderPreviewData.value[0].data=formData.value.order
   }
-})
+},{immediate:true})
+
+//when isFwari is as it is (true) assign default date
 watch(() => isFawri.value == false, () => {
-  refVForm.value?.validate().then(({ valid: isValid }) => {
-  })
-  
-})
-watch(() => formData.value.date, () => {
   if(checkValueForValidation(formData.value.date)){
-    assignDate()
     orderPreviewData.value[1].data=formData.value.date 
   }
-})
+},{immediate:true})
+
+
+//validate date
+watch(() => formData.value.date, () => {
+  if(checkValueForValidation(formData.value.date)){
+    orderPreviewData.value[1].data=formData.value.date 
+  }
+},{immediate:true})
 
 
 
@@ -103,8 +111,20 @@ const setPlace = (place) => {
   let location = place.geometry.location;
   center.value = location;
   mapMarkers.value = [location];
-  console.log("place", place)
+  formData.value.lat=location.lat()
+  formData.value.lng=location.lng()
 }
+//set marker
+const setMarker=(position)=> {
+    mapMarkers.value = [position.latLng];
+    // formData.value.lat=position.latLng.lat()
+    // formData.value.lng=location.latLng.lng()
+    }
+
+const changeMarkerLocation= (evt)=>{
+  formData.value.lat=evt.latLng.lat()
+  formData.value.lng=evt.latLng.lng()
+    }
 
 //assign date and time
 const assignDate = () => {
@@ -117,8 +137,6 @@ const assignDate = () => {
     var date = formData.value.date
     formData.value.date = formData.value.date.substring(0, formData.value.date.indexOf(' '))
     formData.value.time = date.substring(date.indexOf(' ') + 1)
-
-    console.log("formData.value.time", formData.value.time)
   }
 }
 /**
@@ -169,13 +187,13 @@ const orderPreviewData= ref([
   },
   {
     title:'Date',
-    data:null,
+    data:defaultDateTime.value,
     icon: 'tabler-calendar-event',
     color: 'info',
   },
   {
     title:'Location',
-    data:center.value,
+    data:formData.value.lat,
     icon: 'tabler-map-pin-filled',
     color: 'success',
   },
@@ -207,9 +225,10 @@ const orderPreviewData= ref([
 
 
                   <VCol cols="12" md="12">
-                    <!-- <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="orders" /> -->
-                    <AppTextField v-model="formData.order" :label="$t('Order')" :rules="[requiredValidator]"
-                      :type="number" :error-messages="errors.order" />
+                    <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="orders"  :rules="[requiredValidator]"
+                      :error-messages="errors.order"/>
+                    <!-- <AppTextField v-model="formData.order" :label="$t('Order')" :rules="[requiredValidator]"
+                      :type="number" :error-messages="errors.order" /> -->
 
                   </VCol>
 
@@ -289,7 +308,7 @@ const orderPreviewData= ref([
                     <GMapMap :center="center" :zoom="15" map-type-id="terrain" style="width:100%; height: 400px"
                       @click="setMarker">
                       <GMapMarker v-for="(marker, index) in mapMarkers" :key="index" :position="marker" :clickable="true"
-                        :draggable="true" />
+                        :draggable="true" @dragend="changeMarkerLocation"/>
                     </GMapMap>
                   </VCol>
 

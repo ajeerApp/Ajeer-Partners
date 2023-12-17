@@ -26,7 +26,7 @@ export const useAuth = defineStore('auth', {
   }),
   getters: {
     isLoggedIn(state): boolean {
-      // this.initializeFromStorage();
+      // checks if the state.token is truthly and not falsy value like (null,undefined,0,"" etc)
       return !!state.token && !!state.token.access_token;
     },
     getAccessToken(state) {
@@ -88,6 +88,7 @@ export const useAuth = defineStore('auth', {
         user: null,
       });
       localStorage.removeItem(TOKEN_STORE_NAME);
+      window.location.reload()
     },
   },
 });
