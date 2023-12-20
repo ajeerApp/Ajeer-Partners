@@ -7,7 +7,19 @@ import { useLocationStore } from '@/stores/location';
 import { useOrdersStore } from '@/stores/orders';
 
 const ordersStore = useOrdersStore();
-const ordersData = computed(() => ordersStore.orders);
+const ordersData = computed(() => ordersStore.orders)
+const orders = computed(() => {
+  // Check if ordersData is an array
+  if (Array.isArray(ordersStore.orders)) {
+    return ordersStore.orders.map(order => order.id);
+  } 
+  // Check if ordersData is an object (a single order)
+  else if (ordersStore.orders && typeof ordersStore.orders === 'object') {
+    return [ordersStore.orders.id]; // Return an array with a single order's id
+  }
+  // Return an empty array if ordersData is neither an array nor an object
+  return [];
+});
 const refVForm = ref()
 const locationStore = useLocationStore()
 const i18n = useI18n()
@@ -19,7 +31,7 @@ const errorObject = ref({
 })
 const isValidForm = ref(false)
 const mapMarkers = ref([locationStore.getLocation])
-const orders=ref([1222,4445])
+// const orders=ref(null)
 // const fullDate=null
 
 const iconsSteps = [
@@ -107,7 +119,6 @@ watch(() => formData.value.date, () => {
     orderPreviewData.value[1].data=formData.value.date 
   }
 },{immediate:true})
-
 
 
 //set place in using search places input
@@ -234,30 +245,32 @@ onMounted(() => {
                               </div>
                             </VListItemTitle>
       <VCard>
-        <div class="d-flex justify-space-between flex-wrap flex-md-nowrap flex-column flex-md-row">
+        <div class="d-flex justify-space-between flex-wrap flex-md-nowrap flex-column flex-md-row" v-for="order in ordersData">
+          <div  v-for="product in order.products">
           <div class="ma-auto pa-5">
             <VImg
               width="137"
               height="176"
-              :src="eCommerce2"
+              :src="product.image"
             />
           </div>
 
-          <VDivider :vertical="$vuetify.display.mdAndUp" />
 
-          <div>
+          <div >
             <VCardItem>
-              <VCardTitle>Apple iPhone 11 Pro</VCardTitle>
+              <VCardTitle>Order {{  order.id}}</VCardTitle>
             </VCardItem>
 
             <VCardText>
-              Apple iPhone 11 Pro smartphone. Announced Sep 2019. Features 5.8″ display Apple A13 Bionic
+            Name {{  product.name}}
+            </VCardText>
+            <VCardText>
+            Status {{  order.delivery_status}}
             </VCardText>
 
             <VCardText class="text-subtitle-1">
-              <span>Price :</span> <span class="font-weight-medium">$899</span>
+              <span>Sku :</span> <span class="font-weight-medium">{{  product.sku}}</span>
             </VCardText>
-{{ ordersData }}
             <!-- <VCardActions class="justify-space-between">
             
               <IconBtn
@@ -265,13 +278,14 @@ onMounted(() => {
                 icon="tabler-share"
               />
             </VCardActions> -->
-          </div>
+        </div>
+      </div>
         </div>
       </VCard>
                 <VRow class="mt-5">
                  
                   <VCol cols="12" md="12">
-                    <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="orders"  :rules="[requiredValidator]"
+                    <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" v-if="orders" :items="orders"  :rules="[requiredValidator]"
                       :error-messages="errors.order"/>
                     <!-- <AppTextField v-model="formData.order" :label="$t('Order')" :rules="[requiredValidator]"
                       :type="number" :error-messages="errors.order" /> -->
