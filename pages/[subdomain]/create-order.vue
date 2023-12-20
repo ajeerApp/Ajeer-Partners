@@ -4,7 +4,10 @@ import scheduledIconImage from '@images/icons/order-types/scheduled.svg'
 import { useI18n } from 'vue-i18n'
 import Error from '../error.vue'
 import { useLocationStore } from '@/stores/location';
+import { useOrdersStore } from '@/stores/orders';
 
+const ordersStore = useOrdersStore();
+const ordersData = computed(() => ordersStore.orders);
 const refVForm = ref()
 const locationStore = useLocationStore()
 const i18n = useI18n()
@@ -56,6 +59,7 @@ const errors = ref({
   order: undefined,
   date: undefined,
 })
+
 const onSubmit = () => {
   //assign date and time
   refVForm.value?.validate().then(({ valid: isValid }) => {
@@ -198,6 +202,10 @@ const orderPreviewData= ref([
     color: 'success',
   },
 ])
+
+onMounted(() => {
+
+})
 </script>
 
 <template>
@@ -213,17 +221,55 @@ const orderPreviewData= ref([
           <VForm ref="refVForm">
             <VWindow v-model="currentStep" class="disable-tab-transition">
               <VWindowItem>
-                <VRow>
-                  <VCol cols="12">
-                    <h6 class="text-h6 font-weight-medium">
-                      {{ $t("Order Details") }}
-                    </h6>
-                    <p class="mb-0">
-                      {{ $t("Enter your Order Details") }}
-                    </p>
-                  </VCol>
+                <VListItemTitle class="me-4">
+                              <div class="d-flex flex-column">
+                                <h6 class="text-h6 font-weight-medium">
+                                {{$t('Order Details')}}
+                                </h6>
+                                <div>
+                                  <p class="mb-0">
+                                    {{$t('Enter Your Order Details')}}
+                                  </p>
+                                </div>
+                              </div>
+                            </VListItemTitle>
+      <VCard>
+        <div class="d-flex justify-space-between flex-wrap flex-md-nowrap flex-column flex-md-row">
+          <div class="ma-auto pa-5">
+            <VImg
+              width="137"
+              height="176"
+              :src="eCommerce2"
+            />
+          </div>
 
+          <VDivider :vertical="$vuetify.display.mdAndUp" />
 
+          <div>
+            <VCardItem>
+              <VCardTitle>Apple iPhone 11 Pro</VCardTitle>
+            </VCardItem>
+
+            <VCardText>
+              Apple iPhone 11 Pro smartphone. Announced Sep 2019. Features 5.8″ display Apple A13 Bionic
+            </VCardText>
+
+            <VCardText class="text-subtitle-1">
+              <span>Price :</span> <span class="font-weight-medium">$899</span>
+            </VCardText>
+{{ ordersData }}
+            <!-- <VCardActions class="justify-space-between">
+            
+              <IconBtn
+                color="secondary"
+                icon="tabler-share"
+              />
+            </VCardActions> -->
+          </div>
+        </div>
+      </VCard>
+                <VRow class="mt-5">
+                 
                   <VCol cols="12" md="12">
                     <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="orders"  :rules="[requiredValidator]"
                       :error-messages="errors.order"/>

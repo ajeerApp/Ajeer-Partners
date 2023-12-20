@@ -22,7 +22,7 @@ definePageMeta({
 })
 
 const form = ref({
-  mobile: '536940265',
+  mobile: '789456123',
 })
 
 const refVForm = ref()
@@ -40,7 +40,7 @@ const route = useRoute();
 const authStore = useAuth();
 const subDomain = getSubDomain();
 
-const mobile = ref("501234567");
+const mobile = ref("789456123");
 
 // TODO, add front validation
 const login = async () => {
