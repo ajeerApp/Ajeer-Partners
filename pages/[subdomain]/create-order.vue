@@ -4,18 +4,20 @@ import scheduledIconImage from '@images/icons/order-types/scheduled.svg'
 import { useI18n } from 'vue-i18n'
 import Error from '../error.vue'
 import { useLocationStore } from '@/stores/location';
-import { useOrdersStore } from '@/stores/orders';
+import {getUserOrders, isAuthenticated} from '@/utils/auth-user';
 
-const ordersStore = useOrdersStore();
-const ordersData = computed(() => ordersStore.orders)
+const ordersStore = getUserOrders();
+const ordersData = computed(() => ordersStore)
 const orders = computed(() => {
-  // Check if ordersData is an array
-  if (Array.isArray(ordersStore.orders)) {
-    return ordersStore.orders.map(order => order.id);
-  } 
-  // Check if ordersData is an object (a single order)
-  else if (ordersStore.orders && typeof ordersStore.orders === 'object') {
-    return [ordersStore.orders.id]; // Return an array with a single order's id
+  if(isAuthenticated() && getUserOrders()) {
+    // Check if ordersData is an array
+    if (Array.isArray(ordersStore)) {
+      return ordersStore.map(order => order.id);
+    }
+    // Check if ordersData is an object (a single order)
+    else if (ordersStore && typeof ordersStore === 'object') {
+      return [ordersStore.id]; // Return an array with a single order's id
+    }
   }
   // Return an empty array if ordersData is neither an array nor an object
   return [];
@@ -93,7 +95,7 @@ const checkValueForValidation = (value) => {
     isValidForm.value = false
     isActiveStepValidValue.value = false
   return false;
-    
+
   }
 
 }
@@ -108,7 +110,7 @@ watch(() => formData.value.order, () => {
 //when isFwari is as it is (true) assign default date
 watch(() => isFawri.value == false, () => {
   if(checkValueForValidation(formData.value.date)){
-    orderPreviewData.value[1].data=formData.value.date 
+    orderPreviewData.value[1].data=formData.value.date
   }
 },{immediate:true})
 
@@ -116,7 +118,7 @@ watch(() => isFawri.value == false, () => {
 //validate date
 watch(() => formData.value.date, () => {
   if(checkValueForValidation(formData.value.date)){
-    orderPreviewData.value[1].data=formData.value.date 
+    orderPreviewData.value[1].data=formData.value.date
   }
 },{immediate:true})
 
@@ -239,7 +241,7 @@ onMounted(() => {
                                 </h6>
                                 <div>
                                   <p class="mb-0">
-                                    {{$t('Enter Your Order Details')}}
+                                    {{$t('Selected Order Details')}}
                                   </p>
                                 </div>
                               </div>
@@ -272,7 +274,7 @@ onMounted(() => {
               <span>Sku :</span> <span class="font-weight-medium">{{  product.sku}}</span>
             </VCardText>
             <!-- <VCardActions class="justify-space-between">
-            
+
               <IconBtn
                 color="secondary"
                 icon="tabler-share"
@@ -283,7 +285,7 @@ onMounted(() => {
         </div>
       </VCard>
                 <VRow class="mt-5">
-                 
+
                   <VCol cols="12" md="12">
                     <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" v-if="orders" :items="orders"  :rules="[requiredValidator]"
                       :error-messages="errors.order"/>
