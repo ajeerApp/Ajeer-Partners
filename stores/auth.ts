@@ -1,4 +1,7 @@
 import { defineStore } from 'pinia';
+
+import { useOrdersStore} from '~/stores/orders';
+
 const TOKEN_STORE_NAME = 'tokenData';
 const USER_STORE_NAME = 'userData';
 
@@ -17,12 +20,14 @@ interface tokenInfo {
 interface AuthState {
   user: AuthUser | null;
   token: tokenInfo | null;
+  orders:  null;
 }
 
 export const useAuth = defineStore('auth', {
   state: (): AuthState => ({
     user: null,
     token: null,
+    orders:null
   }),
   getters: {
     isLoggedIn(state): boolean {
@@ -63,16 +68,23 @@ export const useAuth = defineStore('auth', {
       const resData = response.data;
       console.log('thi is login resData', resData);
       if (response.success === true) {
+            // Properly assign orders to the state
+    this.orders = resData.partner_user_orders;
+
+        console.log("orders in auth",this.orders)
+        const ordersStore = useOrdersStore();
+        // Update orders in orders store
+        ordersStore.setOrders(this.orders);
         const userMappedData: AuthUser = {
-          name: resData.user.name,
-          mobile: resData.user.mobile,
-          otp: resData.user.otp,
+          name: resData.user.user.first_name,
+          mobile: resData.user.user.mobile,
+          otp: resData.user.user.otp,
         };
 
         const tokenData = {
-          access_token: resData.access_token,
-          token_type: resData.token_type,
-          expires_at: resData.expires_at,
+          access_token: resData.user.access_token,
+          token_type: resData.user.token_type,
+          expires_at: resData.user.expires_at,
         }
 
         this.$patch({ user: userMappedData });
@@ -90,6 +102,10 @@ export const useAuth = defineStore('auth', {
       localStorage.removeItem(TOKEN_STORE_NAME);
       window.location.reload()
     },
+
+   
+  
+    
   },
 });
 

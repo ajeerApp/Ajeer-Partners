@@ -4,7 +4,22 @@ import scheduledIconImage from '@images/icons/order-types/scheduled.svg'
 import { useI18n } from 'vue-i18n'
 import Error from '../error.vue'
 import { useLocationStore } from '@/stores/location';
+import { useOrdersStore } from '@/stores/orders';
 
+const ordersStore = useOrdersStore();
+const ordersData = computed(() => ordersStore.orders)
+const orders = computed(() => {
+  // Check if ordersData is an array
+  if (Array.isArray(ordersStore.orders)) {
+    return ordersStore.orders.map(order => order.id);
+  } 
+  // Check if ordersData is an object (a single order)
+  else if (ordersStore.orders && typeof ordersStore.orders === 'object') {
+    return [ordersStore.orders.id]; // Return an array with a single order's id
+  }
+  // Return an empty array if ordersData is neither an array nor an object
+  return [];
+});
 const refVForm = ref()
 const locationStore = useLocationStore()
 const i18n = useI18n()
@@ -16,7 +31,7 @@ const errorObject = ref({
 })
 const isValidForm = ref(false)
 const mapMarkers = ref([locationStore.getLocation])
-const orders=ref([1222,4445])
+// const orders=ref(null)
 // const fullDate=null
 
 const iconsSteps = [
@@ -56,6 +71,7 @@ const errors = ref({
   order: undefined,
   date: undefined,
 })
+
 const onSubmit = () => {
   //assign date and time
   refVForm.value?.validate().then(({ valid: isValid }) => {
@@ -103,7 +119,6 @@ watch(() => formData.value.date, () => {
     orderPreviewData.value[1].data=formData.value.date 
   }
 },{immediate:true})
-
 
 
 //set place in using search places input
@@ -198,6 +213,10 @@ const orderPreviewData= ref([
     color: 'success',
   },
 ])
+
+onMounted(() => {
+
+})
 </script>
 
 <template>
@@ -213,19 +232,60 @@ const orderPreviewData= ref([
           <VForm ref="refVForm">
             <VWindow v-model="currentStep" class="disable-tab-transition">
               <VWindowItem>
-                <VRow>
-                  <VCol cols="12">
-                    <h6 class="text-h6 font-weight-medium">
-                      {{ $t("Order Details") }}
-                    </h6>
-                    <p class="mb-0">
-                      {{ $t("Enter your Order Details") }}
-                    </p>
-                  </VCol>
+                <VListItemTitle class="me-4">
+                              <div class="d-flex flex-column">
+                                <h6 class="text-h6 font-weight-medium">
+                                {{$t('Order Details')}}
+                                </h6>
+                                <div>
+                                  <p class="mb-0">
+                                    {{$t('Enter Your Order Details')}}
+                                  </p>
+                                </div>
+                              </div>
+                            </VListItemTitle>
+      <VCard>
+        <div class="d-flex justify-space-between flex-wrap flex-md-nowrap flex-column flex-md-row" v-for="order in ordersData">
+          <div  v-for="product in order.products">
+          <div class="ma-auto pa-5">
+            <VImg
+              width="137"
+              height="176"
+              :src="product.image"
+            />
+          </div>
 
 
+          <div >
+            <VCardItem>
+              <VCardTitle>Order {{  order.id}}</VCardTitle>
+            </VCardItem>
+
+            <VCardText>
+            Name {{  product.name}}
+            </VCardText>
+            <VCardText>
+            Status {{  order.delivery_status}}
+            </VCardText>
+
+            <VCardText class="text-subtitle-1">
+              <span>Sku :</span> <span class="font-weight-medium">{{  product.sku}}</span>
+            </VCardText>
+            <!-- <VCardActions class="justify-space-between">
+            
+              <IconBtn
+                color="secondary"
+                icon="tabler-share"
+              />
+            </VCardActions> -->
+        </div>
+      </div>
+        </div>
+      </VCard>
+                <VRow class="mt-5">
+                 
                   <VCol cols="12" md="12">
-                    <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" :items="orders"  :rules="[requiredValidator]"
+                    <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" v-if="orders" :items="orders"  :rules="[requiredValidator]"
                       :error-messages="errors.order"/>
                     <!-- <AppTextField v-model="formData.order" :label="$t('Order')" :rules="[requiredValidator]"
                       :type="number" :error-messages="errors.order" /> -->
