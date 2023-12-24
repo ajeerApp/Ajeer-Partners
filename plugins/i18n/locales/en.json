@@ -28,7 +28,15 @@
     "English": "English",
     "Arabic": "Arabic",
     "Mobile": "Mobile",
-    "Home":"Home"
+    "Home":"Home",
+    "Selected Order Details":"Selected Order Details",
+    "Name:":"Name:",
+    "Status":"Status",
+    "Status:":"Status :",
+    "Sku":"Sku",
+    "Order:":"Order :",
+    "delivered":"delivered"
+
 
 
 

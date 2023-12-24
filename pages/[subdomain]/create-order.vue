@@ -258,21 +258,26 @@ onMounted(() => {
           </div>
 
 
-          <div >
-            <VCardItem>
-              <VCardTitle>Order {{  order.id}}</VCardTitle>
-            </VCardItem>
+          <div class="d-flex"> 
+            
+            <VCardTitle class="font-weight-bolder" style="width: 30%;">    {{$t('Order:')}}</VCardTitle>
+              <VCardTitle class="text-center"  style="width: 70%;">{{  order.id}}</VCardTitle>
+            </div>
+           
+        
+            <div class="d-flex"> 
+              <VCardTitle class="font-weight-light" style="width: 30%;">      {{ $t('Name:') }}</VCardTitle>
+            <VCardTitle class="font-weight-light"  style="width: 70%;">    {{ product.name }}</VCardTitle>
+            </div>
 
-            <VCardText>
-            Name {{  product.name}}
-            </VCardText>
-            <VCardText>
-            Status {{  order.delivery_status}}
-            </VCardText>
-
-            <VCardText class="text-subtitle-1">
-              <span>Sku :</span> <span class="font-weight-medium">{{  product.sku}}</span>
-            </VCardText>
+            <div class="d-flex"> 
+              <VCardTitle class="font-weight-light" style="width: 30%;">     {{$t('Status:')}} </VCardTitle>
+            <VCardTitle class="font-weight-light"  style="width: 70%;">  {{  $t(order.delivery_status)}}</VCardTitle>
+            </div>
+            <!-- {{$t('Status')}} {{  order.delivery_status}} -->
+            <!-- <VCardText class="text-subtitle-1">
+              <span>  {{$t('Sku')}} </span> <span class="font-weight-medium">{{  product.sku}}</span>
+            </VCardText> -->
             <!-- <VCardActions class="justify-space-between">
 
               <IconBtn
@@ -280,7 +285,6 @@ onMounted(() => {
                 icon="tabler-share"
               />
             </VCardActions> -->
-        </div>
       </div>
         </div>
       </VCard>
