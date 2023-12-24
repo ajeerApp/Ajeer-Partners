@@ -6,6 +6,7 @@ import Error from '../error.vue'
 import { useLocationStore } from '@/stores/location';
 import {getUserOrders, isAuthenticated} from '@/utils/auth-user';
 
+const runtimeConfig = useRuntimeConfig()
 const ordersStore = getUserOrders();
 const ordersData = computed(() => ordersStore)
 const orders = computed(() => {
@@ -33,8 +34,8 @@ const errorObject = ref({
 })
 const isValidForm = ref(false)
 const mapMarkers = ref([locationStore.getLocation])
-// const orders=ref(null)
-// const fullDate=null
+const alertDialogTitle=ref('')
+const alertDialogMessage=ref('')
 
 const iconsSteps = [
   {
@@ -73,16 +74,83 @@ const errors = ref({
   order: undefined,
   date: undefined,
 })
+const isAlertDialogOpen = ref(false)
 
 const onSubmit = () => {
   //assign date and time
   refVForm.value?.validate().then(({ valid: isValid }) => {
-    if (isValid)
+    if (isValid){
       isValidForm.value = true
     assignDate()
+    //if no location is selected
+   if(!formData.value.lat||!formData.value.lng){
+    alertDialogTitle.value="Select Location !"
+    alertDialogMessage.value="Please, Select Location On map or Search Your Address"
+    isAlertDialogOpen.value=true
+
+   }
+   else {
+    placeOrder()
+}
+   }
   })
 }
 
+const placeOrder=(async()=>{
+
+ // Construct the order data
+ const orderData = {
+    service_id: 120,
+    partner_order_id: formData.value.order,
+    payment_method_id: 8, // Add or modify as needed
+    is_using_balance: false
+  };
+  Object.assign(orderData,formData.value)
+  console.log("orderData",orderData)
+
+  // Fetch the bearer token from local storage
+  let tokenData =null
+  if (localStorage.getItem('tokenData')) {
+     tokenData = JSON.parse(localStorage.getItem('tokenData'));
+
+            }
+            console.log("tokenData",tokenData.access_token)
+  if (!tokenData) {
+    // Handle the case where the token is not available
+    console.error('Bearer token not found');
+    return;
+  }
+
+  try {
+    const nuxtApp = useNuxtApp()
+    // Make the POST request
+    const response = await nuxtApp.$apiFetch('/orders/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenData.access_token}`
+      },
+      body: {
+        "order":orderData
+      }
+    });
+
+    // Handle the response
+    if(response.success){
+      alertDialogTitle.value="Success "
+      alertDialogMessage.value="Order has been placed successfully !"
+      isAlertDialogOpen.value=true
+
+    }
+  } catch (error) {
+    // Handle any errors that occur during the fetch
+    alertDialogTitle.value = "Error "
+    alertDialogMessage.value = error.error
+
+    isAlertDialogOpen.value = true
+
+  }
+})
 
 //validation
 const checkValueForValidation = (value) => {
@@ -110,7 +178,6 @@ watch(() => formData.value.order, () => {
 //when isFwari is as it is (true) assign default date
 watch(() => isFawri.value == false, () => {
   if(checkValueForValidation(formData.value.date)){
-    orderPreviewData.value[1].data=formData.value.date
   }
 },{immediate:true})
 
@@ -118,9 +185,27 @@ watch(() => isFawri.value == false, () => {
 //validate date
 watch(() => formData.value.date, () => {
   if(checkValueForValidation(formData.value.date)){
-    orderPreviewData.value[1].data=formData.value.date
+    // orderPreviewData.value[1].data=formData.value.date
   }
 },{immediate:true})
+
+
+
+const getAddressInString=(async(lat,lng)=>{
+  console.log("lat",lat,"long",lng)
+  try {
+    let latitude=lat?lat:locationStore.getLocation.lat
+    let longitude=lng?lng:locationStore.getLocation.lng
+
+    await loadGoogleMapsApi(runtimeConfig.public.googleMapKey);
+    const result = await reverseGeocode({ lat: latitude, lng: longitude });
+  //  const city = result.address_components.find(component => component.types.includes('locality'))?.long_name;
+  //  const street = result.address_components.find(component => component.types.includes('route'))?.long_name;
+    orderPreviewData.value[2].data=result.formatted_address
+  } catch (error) {
+    console.error(error);
+  }
+})
 
 
 //set place in using search places input
@@ -130,17 +215,23 @@ const setPlace = (place) => {
   mapMarkers.value = [location];
   formData.value.lat=location.lat()
   formData.value.lng=location.lng()
+  getAddressInString(location.lat(),location.lng())
+  console.log("set place",location.lat(),location.lng())
+
 }
 //set marker
 const setMarker=(position)=> {
     mapMarkers.value = [position.latLng];
-    // formData.value.lat=position.latLng.lat()
-    // formData.value.lng=location.latLng.lng()
+    formData.value.lat=position.latLng.lat()
+    formData.value.lng=position.latLng.lng()
+  getAddressInString(position.latLng.lat(),position.latLng.lng())
     }
 
 const changeMarkerLocation= (evt)=>{
   formData.value.lat=evt.latLng.lat()
   formData.value.lng=evt.latLng.lng()
+  getAddressInString(evt.latLng.lat(),evt.latLng.lng())
+
     }
 
 //assign date and time
@@ -149,12 +240,32 @@ const assignDate = () => {
     const todayDate = new Date();
     formData.value.date = getDateFormat(todayDate);
     formData.value.time = getCurrentTime()
+    orderPreviewData.value[1].data=formData.value.date+formData.value.time 
   }
   else {
-    var date = formData.value.date
-    formData.value.date = formData.value.date.substring(0, formData.value.date.indexOf(' '))
-    formData.value.time = date.substring(date.indexOf(' ') + 1)
-  }
+  var fullDateTime = formData.value.date;
+  console.log("Original dateTime:", fullDateTime);
+
+  // Split the date and time
+  formData.value.date = fullDateTime.substring(0, fullDateTime.indexOf(' '));
+  formData.value.time = formatTime(fullDateTime.substring(fullDateTime.indexOf(' ') + 1));
+  console.log("Formatted time:", formData.value.time);
+
+  orderPreviewData.value[1].data = formData.value.date + ' ' + formData.value.time;
+}
+}
+const formatTime=(timeString)=> {
+  // Split time into components
+  const parts = timeString.split(':');
+
+  // Ensure hours, minutes, and seconds are two digits
+  const hours = parts[0].length === 1 ? '0' + parts[0] : parts[0];
+  const minutes = parts[1].length === 1 ? '0' + parts[1] : parts[1];
+  let seconds = parts[2].substr(0, 2); // Extract seconds without AM/PM part
+  seconds = seconds.length === 1 ? '0' + seconds : seconds;
+  const amPm = parts[2].substr(2); // Extract AM/PM part
+
+  return `${hours}:${minutes}:${seconds} ${amPm}`;
 }
 /**
  * get date format of yyyy-mm-dd
@@ -183,9 +294,11 @@ const getCurrentTime = () => {
 
   // Convert to 12-hour format and determine AM/PM
   const period = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12 || 12;
+  hours = hours % 12;
+  hours = hours === 0 ? 12 : hours; // Convert '0' hour to '12'
 
-  // Add leading zeros to single-digit minutes and seconds
+  // Add leading zeros to single-digit hours, minutes, and seconds
+  hours = hours < 10 ? '0' + hours : hours;
   minutes = minutes < 10 ? '0' + minutes : minutes;
   seconds = seconds < 10 ? '0' + seconds : seconds;
 
@@ -195,6 +308,12 @@ const getCurrentTime = () => {
   return formattedTime;
 }
 
+
+//order Preview prepare
+const checkReview=()=>{
+    assignDate()
+    getAddressInString()
+}
 const orderPreviewData= ref([
   {
     title:'Order',
@@ -204,20 +323,24 @@ const orderPreviewData= ref([
   },
   {
     title:'Date',
-    data:defaultDateTime.value,
+    data:null,
     icon: 'tabler-calendar-event',
     color: 'info',
   },
   {
     title:'Location',
-    data:formData.value.lat,
+    data:null,
     icon: 'tabler-map-pin-filled',
     color: 'success',
   },
 ])
 
-onMounted(() => {
 
+
+
+
+onMounted(async() => {
+ 
 })
 </script>
 
@@ -246,44 +369,35 @@ onMounted(() => {
                                 </div>
                               </div>
                             </VListItemTitle>
-      <VCard>
-        <div class="d-flex justify-space-between flex-wrap flex-md-nowrap flex-column flex-md-row" v-for="order in ordersData">
-          <div  v-for="product in order.products">
-          <div class="ma-auto pa-5">
-            <VImg
-              width="137"
-              height="176"
-              :src="product.image"
-            />
-          </div>
 
 
-          <div >
-            <VCardItem>
-              <VCardTitle>Order {{  order.id}}</VCardTitle>
-            </VCardItem>
+        <!-- 👉 Orders  -->
+        <VCard class="mb-6 mt-4"  v-for="order in ordersData">
+          <VCardText class="d-flex flex-column gap-y-6" v-for="product in order.products">
+            <!-- <div class="text-body-1 text-high-emphasis font-weight-medium">
+              {{$t('Orders')}}
+            </div> -->
 
-            <VCardText>
-            Name {{  product.name}}
-            </VCardText>
-            <VCardText>
-            Status {{  order.delivery_status}}
-            </VCardText>
-
-            <VCardText class="text-subtitle-1">
-              <span>Sku :</span> <span class="font-weight-medium">{{  product.sku}}</span>
-            </VCardText>
-            <!-- <VCardActions class="justify-space-between">
-
-              <IconBtn
-                color="secondary"
-                icon="tabler-share"
+            <div class="d-flex align-center">
+              <VAvatar
+                :image="product.image"
+                class="me-3"
               />
-            </VCardActions> -->
-        </div>
-      </div>
-        </div>
-      </VCard>
+              <div>
+                <div class="text-body-1 font-weight-medium">
+                  {{ product.name }}
+                </div>
+                <div class="d-flex flex-column">
+                <span class="text-sm text-disabled"> {{$t('Order:')}} #{{  order.id}}</span>
+                <span class="text-sm text-disabled"> {{$t('Status:')}} {{  $t(order.delivery_status)}}</span>
+                </div>
+
+              </div>
+            </div>
+
+
+          </VCardText>
+        </VCard>
                 <VRow class="mt-5">
 
                   <VCol cols="12" md="12">
@@ -430,7 +544,7 @@ onMounted(() => {
                 {{ $t("Place Order") }}
               </VBtn>
 
-              <VBtn v-else @click="currentStep++" :disabled="!isValidForm">
+              <VBtn v-else @click="currentStep++;checkReview()" :disabled="!isValidForm">
                 {{ $t("Next") }}
 
                 <VIcon icon="tabler-arrow-right" end class="flip-in-rtl" />
@@ -443,6 +557,9 @@ onMounted(() => {
 
     <!-- 👉 Get currenct location -->
     <GeoLocation />
+
+        <!-- 👉 Enable When Location is null -->
+        <AlertMessage v-model:isDialogVisible="isAlertDialogOpen"  :title="alertDialogTitle" :message="alertDialogMessage"/>
   </div>
   <error :error="errorObject" v-else></error>
 </template>
