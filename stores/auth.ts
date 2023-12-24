@@ -4,6 +4,7 @@ import { useOrdersStore} from '~/stores/orders';
 
 const TOKEN_STORE_NAME = 'tokenData';
 const USER_STORE_NAME = 'userData';
+const ORDERS_STORE_NAME = 'ordersData';
 
 interface AuthUser {
   name: string;
@@ -17,10 +18,14 @@ interface tokenInfo {
   expires_at: string;
 }
 
+interface OrdersInfo {
+  orders: array;
+}
+
 interface AuthState {
   user: AuthUser | null;
   token: tokenInfo | null;
-  orders:  null;
+  orders:  OrdersInfo;
 }
 
 export const useAuth = defineStore('auth', {
@@ -40,15 +45,22 @@ export const useAuth = defineStore('auth', {
     getUserData(state) {
       return state.user ? state.user : null;
     },
+    getOrdersData(state) {
+      return state.orders ? state.orders : null;
+    },
   },
   actions: {
 
     initializeFromStorage() {
         if (process.client && localStorage.getItem(TOKEN_STORE_NAME)) {
-              const tokenData = JSON.parse(localStorage.getItem(TOKEN_STORE_NAME));
+              const  tokenData = JSON.parse(localStorage.getItem(TOKEN_STORE_NAME));
+              const  ordersData = JSON.parse(localStorage.getItem(ORDERS_STORE_NAME));
               const  userdData = JSON.parse(localStorage.getItem(USER_STORE_NAME));
               if (tokenData) {
                 this.$patch({ token: tokenData });
+              }
+              if (ordersData) {
+                this.$patch({ orders: ordersData });
               }
               if (userdData) {
                this.$patch({ user: userdData });
@@ -87,9 +99,14 @@ export const useAuth = defineStore('auth', {
           expires_at: resData.user.expires_at,
         }
 
+        const ordersData = resData.partner_user_orders;
+
         this.$patch({ user: userMappedData });
         localStorage.setItem(TOKEN_STORE_NAME, JSON.stringify(tokenData));
+        localStorage.setItem(ORDERS_STORE_NAME, JSON.stringify(ordersData));
         localStorage.setItem(USER_STORE_NAME, JSON.stringify(userMappedData));
+
+        console.log('thi is login ordersData', ordersData);
       } else {
         throw new Error('Login failed');
       }
@@ -103,9 +120,9 @@ export const useAuth = defineStore('auth', {
       window.location.reload()
     },
 
-   
-  
-    
+
+
+
   },
 });
 
