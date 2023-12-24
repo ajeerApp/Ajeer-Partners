@@ -244,9 +244,9 @@ onMounted(() => {
                                 </div>
                               </div>
                             </VListItemTitle>
-      <VCard>
-        <div class="d-flex justify-space-between flex-wrap flex-md-nowrap flex-column flex-md-row" v-for="order in ordersData">
-          <div  v-for="product in order.products">
+      <VCard v-for="order in ordersData">
+        <div class="d-flex justify-space-between flex-wrap flex-md-nowrap flex-column flex-md-row"  v-for="product in order.products">
+          <div >
           <div class="ma-auto pa-5">
             <VImg
               width="137"

@@ -1,29 +1,19 @@
 // import { useOrdersStore } from '@/stores/orders';
 
-
 export const useOrdersStore=defineStore('Orders',{
     state:()=>({
-        orders:[
-       {
-        id:null,
-        delivery_status:null,
-        purchase_date:null,
-        products:[
-            {
-                name:null,
-                quantity:null,
-                image:null
-            }
-        ]
-       }
-    ]
+        orders:JSON.parse(localStorage.getItem("orders") || '[]'),
         }),
     actions:{
-setOrders(newOrders) {
+   setOrders(newOrders) {
     this.orders= newOrders;
+    localStorage.setItem("orders",JSON.stringify(newOrders))
   }
     },
     getters:{
-        getOrders:(state)=>state.orders,
+        getOrders: (state) => state.orders,
+        // initializeDataFromStorage(){
+        //    state= JSON.parse(localStorage.getItem("orders"))
+        // }
     }
 })
