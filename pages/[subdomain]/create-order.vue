@@ -246,48 +246,35 @@ onMounted(() => {
                                 </div>
                               </div>
                             </VListItemTitle>
-      <VCard>
-        <div class="d-flex justify-space-between flex-wrap flex-md-nowrap flex-column flex-md-row" v-for="order in ordersData">
-          <div  v-for="product in order.products">
-          <div class="ma-auto pa-5">
-            <VImg
-              width="137"
-              height="176"
-              :src="product.image"
-            />
-          </div>
 
 
-          <div class="d-flex"> 
-            
-            <VCardTitle class="font-weight-bolder" style="width: 30%;">    {{$t('Order:')}}</VCardTitle>
-              <VCardTitle class="text-center"  style="width: 70%;">{{  order.id}}</VCardTitle>
-            </div>
-           
-        
-            <div class="d-flex"> 
-              <VCardTitle class="font-weight-light" style="width: 30%;">      {{ $t('Name:') }}</VCardTitle>
-            <VCardTitle class="font-weight-light"  style="width: 70%;">    {{ product.name }}</VCardTitle>
-            </div>
+        <!-- 👉 Orders  -->
+        <VCard class="mb-6 mt-4"  v-for="order in ordersData">
+          <VCardText class="d-flex flex-column gap-y-6" v-for="product in order.products">
+            <!-- <div class="text-body-1 text-high-emphasis font-weight-medium">
+              {{$t('Orders')}}
+            </div> -->
 
-            <div class="d-flex"> 
-              <VCardTitle class="font-weight-light" style="width: 30%;">     {{$t('Status:')}} </VCardTitle>
-            <VCardTitle class="font-weight-light"  style="width: 70%;">  {{  $t(order.delivery_status)}}</VCardTitle>
-            </div>
-            <!-- {{$t('Status')}} {{  order.delivery_status}} -->
-            <!-- <VCardText class="text-subtitle-1">
-              <span>  {{$t('Sku')}} </span> <span class="font-weight-medium">{{  product.sku}}</span>
-            </VCardText> -->
-            <!-- <VCardActions class="justify-space-between">
-
-              <IconBtn
-                color="secondary"
-                icon="tabler-share"
+            <div class="d-flex align-center">
+              <VAvatar
+                :image="product.image"
+                class="me-3"
               />
-            </VCardActions> -->
-      </div>
-        </div>
-      </VCard>
+              <div>
+                <div class="text-body-1 font-weight-medium">
+                  {{ product.name }}
+                </div>
+                <div class="d-flex flex-column">
+                <span class="text-sm text-disabled"> {{$t('Order:')}} #{{  order.id}}</span>
+                <span class="text-sm text-disabled"> {{$t('Status:')}} {{  $t(order.delivery_status)}}</span>
+                </div>
+
+              </div>
+            </div>
+
+
+          </VCardText>
+        </VCard>
                 <VRow class="mt-5">
 
                   <VCol cols="12" md="12">
