@@ -52,12 +52,12 @@ some notes about deployment .
 
 #### Deploy in stag
 ```sh
-pm2 start ecosystem.config.cjs --only ajeer-partners-stg --watch
+pm2 start ecosystem.config.cjs --only partners.stg.iajeer.com --watch
 ```
 
 #### Deploy in production
 ```sh
-pm2 start ecosystem.config.cjs --only ajeer-partners-prod --watch
+pm2 start ecosystem.config.cjs --only partners.iajeer.com --watch
 ```
 
 while the "ajeer-partners-prod" is the app name in ecosystem.config.js file, you can change it to any name you want.

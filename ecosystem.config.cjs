@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
         {
-            name: 'ajeer-partners-prod',
+            name: 'partners.iajeer.com',
             port:'3003',
             script: './.output/server/index.mjs',
             exec_mode: 'cluster',
@@ -9,7 +9,7 @@ module.exports = {
             mode: 'production',
         },
         // {
-        //     name: 'ajeer-partners-stg',
+        //     name: 'partners.stg.iajeer.com',
         //     port:'3003',
         //     script: './.output/server/index.mjs',
         //     exec_mode: 'cluster',
