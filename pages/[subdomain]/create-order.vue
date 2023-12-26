@@ -240,7 +240,7 @@ const assignDate = () => {
     const todayDate = new Date();
     formData.value.date = getDateFormat(todayDate);
     formData.value.time = getCurrentTime()
-    orderPreviewData.value[1].data=formData.value.date+formData.value.time 
+    orderPreviewData.value[1].data=formData.value.date+formData.value.time
   }
   else {
   var fullDateTime = formData.value.date;
@@ -262,10 +262,13 @@ const formatTime=(timeString)=> {
   const hours = parts[0].length === 1 ? '0' + parts[0] : parts[0];
   const minutes = parts[1].length === 1 ? '0' + parts[1] : parts[1];
   let seconds = parts[2].substr(0, 2); // Extract seconds without AM/PM part
-  seconds = seconds.length === 1 ? '0' + seconds : seconds;
+  let FormattedSeconds ='00'; // user will not select seconds, just we pass it for  backend validation
+
+  console.log("Formatted FormattedSeconds:", FormattedSeconds );
+
   const amPm = parts[2].substr(2); // Extract AM/PM part
 
-  return `${hours}:${minutes}:${seconds} ${amPm}`;
+  return `${hours}:${minutes}:${FormattedSeconds} ${amPm}`;
 }
 /**
  * get date format of yyyy-mm-dd
@@ -340,7 +343,7 @@ const orderPreviewData= ref([
 
 
 onMounted(async() => {
- 
+
 })
 </script>
 
