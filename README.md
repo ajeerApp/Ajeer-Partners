@@ -60,7 +60,7 @@ pm2 start ecosystem.config.cjs --only partners.stg.iajeer.com --watch
 pm2 start ecosystem.config.cjs --only partners.iajeer.com --watch
 ```
 
-while the "ajeer-partners-prod" is the app name in ecosystem.config.js file, you can change it to any name you want.
+while the "partners.iajeer.com" is the app name in ecosystem.config.js file, you can change it to any name you want.
 
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
