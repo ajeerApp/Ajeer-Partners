@@ -8,13 +8,13 @@ module.exports = {
             instances: 'max',
             mode: 'production',
         },
-        // {
-        //     name: 'partners.stg.iajeer.com',
-        //     port:'3003',
-        //     script: './.output/server/index.mjs',
-        //     exec_mode: 'cluster',
-        //     instances: 'max',
-        //     mode: 'stg',
-        // },
+        {
+            name: 'partners.stg.iajeer.com',
+            port:'3003',
+            script: './.output/server/index.mjs',
+            exec_mode: 'cluster',
+            instances: 'max',
+            mode: 'stg',
+        },
     ]
   }
