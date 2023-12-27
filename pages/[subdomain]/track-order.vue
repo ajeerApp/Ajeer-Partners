@@ -4,24 +4,24 @@ import scheduledIconImage from '@images/icons/order-types/scheduled.svg'
 import { useI18n } from 'vue-i18n'
 import Error from '../error.vue'
 import { useLocationStore } from '@/stores/location';
-import {getPartnerOrders, isAuthenticated} from '@/utils/auth-user';
+import {getajeerOrders,getAjeerOrders, isAuthenticated} from '@/utils/auth-user';
 import { ref, computed, watch } from 'vue';
 
 const runtimeConfig = useRuntimeConfig()
-const storedPartnerOrders = getPartnerOrders();
-const partnerOrders = computed(() => storedPartnerOrders)
+const storedAjeerOrders = getAjeerOrders();
+const ajeerOrders = computed(() => storedAjeerOrders)
 const orders = computed(() => {
-  if(isAuthenticated() && getPartnerOrders()) {
-    // Check if partnerOrders is an array
-    if (Array.isArray(storedPartnerOrders)) {
-      return storedPartnerOrders.map(order => order.id);
+  if(isAuthenticated() && getajeerOrders()) {
+    // Check if ajeerOrders is an array
+    if (Array.isArray(storedAjeerOrders)) {
+      return storedAjeerOrders.map(order => order.id);
     }
-    // Check if partnerOrders is an object (a single order)
-    else if (storedPartnerOrders && typeof storedPartnerOrders === 'object') {
-      return [storedPartnerOrders.id]; // Return an array with a single order's id
+    // Check if ajeerOrders is an object (a single order)
+    else if (storedAjeerOrders && typeof storedAjeerOrders === 'object') {
+      return [storedAjeerOrders.id]; // Return an array with a single order's id
     }
   }
-  // Return an empty array if partnerOrders is neither an array nor an object
+  // Return an empty array if ajeerOrders is neither an array nor an object
   return [];
 });
 
@@ -176,7 +176,7 @@ const selectedOrder = ref(null);
 //these watchers are made for validation of inputs
 //validate order
 watch(() => formData.value.order, (newValue, oldValue) => {
-  const updatedOrder = partnerOrders.value.find(order => order.id === newValue);
+  const updatedOrder = ajeerOrders.value.find(order => order.id === newValue);
 
   selectedOrder.value = updatedOrder;
   console.log('formData.order changed , updatedOrder.value is:', selectedOrder.value);

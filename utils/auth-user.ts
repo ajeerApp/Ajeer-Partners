@@ -18,3 +18,9 @@ export function getPartnerOrders() {
   auth.initializeFromStorage();
   return auth.getPartnerOrders;
 }
+
+export function getAjeerOrders() {
+  const auth = useAuth();
+  auth.initializeFromStorage();
+  return auth.getAjeerOrders;
+}
