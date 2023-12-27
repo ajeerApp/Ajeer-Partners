@@ -422,7 +422,7 @@ const orderPreviewData= ref([
 
                 </VRow>
 
-                <VRow class="mt-5" v-if="storedAjeerOrders.length">
+                <VRow class="mt-5" v-if="storedAjeerOrders && storedAjeerOrders.length">
                   <VCol cols="12" md="12">
                     <VListItemTitle class="me-4">
                       <div class="d-flex flex-column">
