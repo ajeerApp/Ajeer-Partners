@@ -4,11 +4,12 @@ import scheduledIconImage from '@images/icons/order-types/scheduled.svg'
 import { useI18n } from 'vue-i18n'
 import Error from '../error.vue'
 import { useLocationStore } from '@/stores/location';
-import {getPartnerOrders, isAuthenticated} from '@/utils/auth-user';
+import {getAjeerOrders, getPartnerOrders, isAuthenticated} from '@/utils/auth-user';
 import { ref, computed, watch } from 'vue';
 
 const runtimeConfig = useRuntimeConfig()
 const storedPartnerOrders = getPartnerOrders();
+const storedAjeerOrders = getAjeerOrders();
 const partnerOrders = computed(() => storedPartnerOrders)
 const orders = computed(() => {
   if(isAuthenticated() && getPartnerOrders()) {
@@ -24,6 +25,7 @@ const orders = computed(() => {
   // Return an empty array if partnerOrders is neither an array nor an object
   return [];
 });
+
 
 const refVForm = ref()
 const locationStore = useLocationStore()
@@ -140,10 +142,13 @@ const placeOrder=(async()=>{
     console.log('response when create order', response);
 
     // Handle the response
-    if(response.success){
-      alertDialogTitle.value="Success"
-      alertDialogMessage.value="Order has been placed successfully !"
-      isAlertDialogOpen.value=true
+    if (response.success) {
+      alertDialogTitle.value = "Success";
+      alertDialogMessage.value = "Order has been placed successfully!";
+      isAlertDialogOpen.value = true;
+      setTimeout(() => {
+        this.$nuxt.refresh();
+      }, 3000);
     }
   } catch (error) {
     console.log('error when create order', error);
@@ -176,10 +181,11 @@ const selectedOrder = ref(null);
 //these watchers are made for validation of inputs
 //validate order
 watch(() => formData.value.order, (newValue, oldValue) => {
-  const updatedOrder = partnerOrders.value.find(order => order.id === newValue);
-
-  selectedOrder.value = updatedOrder;
-  console.log('formData.order changed , updatedOrder.value is:', selectedOrder.value);
+  if(newValue && partnerOrders) {
+    const updatedOrder = partnerOrders.value.find(order => order.id === newValue);
+    selectedOrder.value = updatedOrder;
+    console.log('formData.order changed , updatedOrder.value is:', selectedOrder.value);
+  }
 
   if(checkValueForValidation(formData.value.order)){
     orderPreviewData.value[0].data=formData.value.order
@@ -363,7 +369,7 @@ const orderPreviewData= ref([
           <VForm ref="refVForm">
             <VWindow v-model="currentStep" class="disable-tab-transition">
               <VWindowItem>
-                <VListItemTitle class="me-4">
+                <VListItemTitle class="me-4" v-if="selectedOrder">
                     <div class="d-flex flex-column">
                         <h6 class="text-h6 font-weight-medium">
                         {{$t('Order Details')}}
@@ -404,7 +410,7 @@ const orderPreviewData= ref([
                 <VRow class="mt-5">
 
                   <VCol cols="12" md="12">
-                    <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" v-if="orders" :items="orders"  :rules="[requiredValidator]"
+                    <AppSelect v-model="formData.order" :label="$t('Order')" :placeholder="$t('Select Order')" v-if="orders" :items="orders" :rules="[requiredValidator]"
                       :error-messages="errors.order"/>
                     <!-- <AppTextField v-model="formData.order" :label="$t('Order')" :rules="[requiredValidator]"
                       :type="number" :error-messages="errors.order" /> -->
@@ -413,6 +419,37 @@ const orderPreviewData= ref([
 
 
                 </VRow>
+
+                <VRow class="mt-5" v-if="storedAjeerOrders">
+                  <VCol cols="12" md="12">
+                    <VListItemTitle class="me-4">
+                      <div class="d-flex flex-column">
+                        <h6 class="text-h6 font-weight-medium">
+                          {{$t('scheduled Orders')}}
+                        </h6>
+                        <div>
+                        </div>
+                      </div>
+                    </VListItemTitle>
+                      <VCard class="mb-6 mt-4" >
+                          <VCardText class="d-flex flex-column gap-y-6" v-for="order in storedAjeerOrders">
+                            <div class="d-flex align-center">
+                              <div>
+                                <div class="text-body-1 font-weight-medium">
+                                  {{ order.partner_order_id }}
+                                </div>
+<!--                                TODO, show order formatted status -->
+<!--                                <div class="d-flex flex-column">-->
+<!--                                  <span class="text-sm text-disabled"> {{$t('Order:')}} #{{  order.id}}</span>-->
+<!--                                  <span class="text-sm text-disabled"> {{$t('Status:')}} {{  $t(selectedOrder.status)}}</span>-->
+<!--                                </div>-->
+                              </div>
+                            </div>
+                          </VCardText>
+                        </VCard>
+                  </VCol>
+                </VRow>
+
               </VWindowItem>
 
               <VWindowItem>
