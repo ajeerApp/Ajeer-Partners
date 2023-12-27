@@ -2,7 +2,8 @@ import { defineStore } from 'pinia';
 
 const TOKEN_STORE_NAME = 'tokenData';
 const USER_STORE_NAME = 'userData';
-const ORDERS_STORE_NAME = 'userOrdersData'; // New localStorage key for orders
+const PARTNER_ORDERS_STORE_NAME = 'partnerOrdersData'; // New localStorage key for orders
+const AJEER_ORDERS_STORE_NAME = 'ajeerOrdersData'; // New localStorage key for orders
 
 interface AuthUser {
   name: string;
@@ -23,17 +24,23 @@ interface OrderProduct {
     image: string;
 }
 
-interface PartnerUserOrder {
+interface PartnerUserOrders {
     id: string;
     delivery_status: string;
     purchase_date: string;
     products: OrderProduct[];
 }
 
+interface AjeerUserOrders {
+  id: string;
+  status: string;
+}
+
 interface AuthState {
   user: AuthUser | null;
   token: tokenInfo | null;
-  orders: PartnerUserOrder[] | null;
+  partner_orders: PartnerUserOrders[] | null;
+  ajeer_orders: AjeerUserOrders[] | null;
 }
 
 
@@ -41,7 +48,8 @@ export const useAuth = defineStore('auth', {
   state: (): AuthState => ({
     user: null,
     token: null,
-    orders: null,
+    partner_orders: null,
+    ajeer_orders: null,
   }),
 
   getters: {
@@ -55,8 +63,11 @@ export const useAuth = defineStore('auth', {
     getUserData(state) {
       return state.user ? state.user : null;
     },
-    getOrders(state): PartnerUserOrder[] | null {
-        return state.orders;
+    getPartnerOrders(state): PartnerUserOrders[] | null {
+        return state.partner_orders;
+    },
+    getAjeerOrders(state): PartnerUserOrders[] | null {
+      return state.ajeer_orders;
     },
   },
   actions: {
@@ -65,16 +76,20 @@ export const useAuth = defineStore('auth', {
         if (process.client && localStorage.getItem(TOKEN_STORE_NAME)) {
               const tokenData = JSON.parse(localStorage.getItem(TOKEN_STORE_NAME));
               const  userdData = JSON.parse(localStorage.getItem(USER_STORE_NAME));
-              const ordersData = JSON.parse(localStorage.getItem(ORDERS_STORE_NAME)); // Retrieve orders from localStorage
+              const partnerOrdersData = JSON.parse(localStorage.getItem(PARTNER_ORDERS_STORE_NAME)); // Retrieve orders from localStorage
+              const ajeerOrdersData = JSON.parse(localStorage.getItem(AJEER_ORDERS_STORE_NAME)); // Retrieve orders from localStorage
             if (tokenData) {
                 this.$patch({ token: tokenData });
               }
               if (userdData) {
                this.$patch({ user: userdData });
               }
-              if (ordersData) {
-                    this.$patch({ orders: ordersData });
+              if (partnerOrdersData) {
+                    this.$patch({ partner_orders: partnerOrdersData });
               }
+            if (ajeerOrdersData) {
+              this.$patch({ ajeer_orders: ajeerOrdersData });
+            }
         }
     },
 
@@ -102,15 +117,20 @@ export const useAuth = defineStore('auth', {
           expires_at: resData.user.expires_at,
         }
 
-        const ordersData = resData.partner_user_orders;
-        this.$patch({ orders: null });
-        localStorage.removeItem(ORDERS_STORE_NAME); // clear old order data
+        const partnerOrdersData = resData.partner_orders;
+        const ajeerOrdersData = resData.ajeer_orders;
+        this.$patch({ partner_orders: null });
+        this.$patch({ ajeer_orders: null });
+        localStorage.removeItem(PARTNER_ORDERS_STORE_NAME); // clear old order data
+        localStorage.removeItem(AJEER_ORDERS_STORE_NAME); // clear old order data
         this.$patch({ user: userMappedData });
-        this.$patch({ orders: ordersData });
+        this.$patch({ partner_orders: partnerOrdersData });
+        this.$patch({ ajeer_orders: ajeerOrdersData });
 
         localStorage.setItem(TOKEN_STORE_NAME, JSON.stringify(tokenData));
         localStorage.setItem(USER_STORE_NAME, JSON.stringify(userMappedData));
-        localStorage.setItem(ORDERS_STORE_NAME, JSON.stringify(ordersData));
+        localStorage.setItem(PARTNER_ORDERS_STORE_NAME, JSON.stringify(partnerOrdersData));
+        localStorage.setItem(AJEER_ORDERS_STORE_NAME, JSON.stringify(ajeerOrdersData));
       } else {
         throw new Error('Login failed');
       }
@@ -121,8 +141,10 @@ export const useAuth = defineStore('auth', {
         user: null,
       });
       localStorage.removeItem(TOKEN_STORE_NAME);
-      this.$patch({ orders: null });
-      localStorage.removeItem(ORDERS_STORE_NAME);
+      this.$patch({ partner_orders: null });
+      this.$patch({ ajeer_orders: null });
+      localStorage.removeItem(PARTNER_ORDERS_STORE_NAME);
+      localStorage.removeItem(AJEER_ORDERS_STORE_NAME);
       window.location.reload()
     },
 
