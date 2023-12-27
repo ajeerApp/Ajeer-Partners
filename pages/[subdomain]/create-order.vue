@@ -4,25 +4,27 @@ import scheduledIconImage from '@images/icons/order-types/scheduled.svg'
 import { useI18n } from 'vue-i18n'
 import Error from '../error.vue'
 import { useLocationStore } from '@/stores/location';
-import {getUserOrders, isAuthenticated} from '@/utils/auth-user';
+import {getPartnerOrders, isAuthenticated} from '@/utils/auth-user';
+import { ref, computed, watch } from 'vue';
 
 const runtimeConfig = useRuntimeConfig()
-const ordersStore = getUserOrders();
-const ordersData = computed(() => ordersStore)
+const storedPartnerOrders = getPartnerOrders();
+const partnerOrders = computed(() => storedPartnerOrders)
 const orders = computed(() => {
-  if(isAuthenticated() && getUserOrders()) {
-    // Check if ordersData is an array
-    if (Array.isArray(ordersStore)) {
-      return ordersStore.map(order => order.id);
+  if(isAuthenticated() && getPartnerOrders()) {
+    // Check if partnerOrders is an array
+    if (Array.isArray(storedPartnerOrders)) {
+      return storedPartnerOrders.map(order => order.id);
     }
-    // Check if ordersData is an object (a single order)
-    else if (ordersStore && typeof ordersStore === 'object') {
-      return [ordersStore.id]; // Return an array with a single order's id
+    // Check if partnerOrders is an object (a single order)
+    else if (storedPartnerOrders && typeof storedPartnerOrders === 'object') {
+      return [storedPartnerOrders.id]; // Return an array with a single order's id
     }
   }
-  // Return an empty array if ordersData is neither an array nor an object
+  // Return an empty array if partnerOrders is neither an array nor an object
   return [];
 });
+
 const refVForm = ref()
 const locationStore = useLocationStore()
 const i18n = useI18n()
@@ -135,18 +137,19 @@ const placeOrder=(async()=>{
       }
     });
 
+    console.log('response when create order', response);
+
     // Handle the response
     if(response.success){
-      alertDialogTitle.value="Success "
+      alertDialogTitle.value="Success"
       alertDialogMessage.value="Order has been placed successfully !"
       isAlertDialogOpen.value=true
-
     }
   } catch (error) {
+    console.log('error when create order', error);
     // Handle any errors that occur during the fetch
     alertDialogTitle.value = "Error "
     alertDialogMessage.value = error.error
-
     isAlertDialogOpen.value = true
 
   }
@@ -167,9 +170,17 @@ const checkValueForValidation = (value) => {
   }
 
 }
+
+const selectedOrder = ref(null);
+
 //these watchers are made for validation of inputs
 //validate order
-watch(() => formData.value.order, () => {
+watch(() => formData.value.order, (newValue, oldValue) => {
+
+  const updatedOrder = partnerOrders.value.find(order => order.id === newValue);
+  selectedOrder.value = updatedOrder;
+  console.log('formData.order changed , updatedOrder.value is:', selectedOrder.value);
+
   if(checkValueForValidation(formData.value.order)){
     orderPreviewData.value[0].data=formData.value.order
   }
@@ -311,7 +322,6 @@ const getCurrentTime = () => {
   return formattedTime;
 }
 
-
 //order Preview prepare
 const checkReview=()=>{
     assignDate()
@@ -338,13 +348,6 @@ const orderPreviewData= ref([
   },
 ])
 
-
-
-
-
-onMounted(async() => {
-
-})
 </script>
 
 <template>
@@ -361,22 +364,21 @@ onMounted(async() => {
             <VWindow v-model="currentStep" class="disable-tab-transition">
               <VWindowItem>
                 <VListItemTitle class="me-4">
-                              <div class="d-flex flex-column">
-                                <h6 class="text-h6 font-weight-medium">
-                                {{$t('Order Details')}}
-                                </h6>
-                                <div>
-                                  <p class="mb-0">
-                                    {{$t('Selected Order Details')}}
-                                  </p>
-                                </div>
-                              </div>
-                            </VListItemTitle>
-
+                    <div class="d-flex flex-column">
+                        <h6 class="text-h6 font-weight-medium">
+                        {{$t('Order Details')}}
+                        </h6>
+                        <div>
+                          <p class="mb-0">
+                            {{$t('Selected Order Details')}}
+                          </p>
+                        </div>
+                    </div>
+                </VListItemTitle>
 
         <!-- 👉 Orders  -->
-        <VCard class="mb-6 mt-4"  v-for="order in ordersData">
-          <VCardText class="d-flex flex-column gap-y-6" v-for="product in order.products">
+        <VCard class="mb-6 mt-4" v-if="selectedOrder">
+          <VCardText class="d-flex flex-column gap-y-6" v-for="product in selectedOrder.products">
             <!-- <div class="text-body-1 text-high-emphasis font-weight-medium">
               {{$t('Orders')}}
             </div> -->
@@ -391,14 +393,12 @@ onMounted(async() => {
                   {{ product.name }}
                 </div>
                 <div class="d-flex flex-column">
-                <span class="text-sm text-disabled"> {{$t('Order:')}} #{{  order.id}}</span>
-                <span class="text-sm text-disabled"> {{$t('Status:')}} {{  $t(order.delivery_status)}}</span>
+                <span class="text-sm text-disabled"> {{$t('Order:')}} #{{  selectedOrder.id}}</span>
+                <span class="text-sm text-disabled"> {{$t('Status:')}} {{  $t(selectedOrder.delivery_status)}}</span>
                 </div>
 
               </div>
             </div>
-
-
           </VCardText>
         </VCard>
                 <VRow class="mt-5">

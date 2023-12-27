@@ -13,8 +13,8 @@ export function getAuthUserToken() {
   return auth.getAccessToken;
 }
 
-export function getUserOrders() {
+export function getPartnerOrders() {
   const auth = useAuth();
   auth.initializeFromStorage();
-  return auth.getOrders;
+  return auth.getPartnerOrders;
 }
