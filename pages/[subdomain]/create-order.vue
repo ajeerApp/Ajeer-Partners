@@ -7,6 +7,8 @@ import { useLocationStore } from '@/stores/location';
 import {getAjeerOrders, getPartnerOrders, isAuthenticated} from '@/utils/auth-user';
 import { ref, computed, watch } from 'vue';
 
+const PARTNER_ORDERS_STORE_NAME = 'partnerOrdersData'; // New localStorage key for orders
+const AJEER_ORDERS_STORE_NAME = 'ajeerOrdersData'; // New localStorage key for orders
 const runtimeConfig = useRuntimeConfig()
 const storedPartnerOrders = getPartnerOrders();
 const storedAjeerOrders = getAjeerOrders();
@@ -148,6 +150,9 @@ const placeOrder=(async()=>{
       alertDialogTitle.value = "Success";
       alertDialogMessage.value = "Order has been placed successfully!";
       isAlertDialogOpen.value = true;
+      // TODO, handle this with pinaia setters , and handle for multiple orders
+      localStorage.removeItem(PARTNER_ORDERS_STORE_NAME);
+      localStorage.setItem(AJEER_ORDERS_STORE_NAME, JSON.stringify(response.data.order));
       setTimeout(() => {
         this.$nuxt.refresh();
       }, 1000);
