@@ -41,6 +41,8 @@ const mapMarkers = ref([locationStore.getLocation])
 const alertDialogTitle=ref('')
 const alertDialogMessage=ref('')
 
+const isPlaceOrderDisabled = ref(false);
+
 const iconsSteps = [
   {
     title: i18n.t('Order Details'),
@@ -101,6 +103,7 @@ const onSubmit = () => {
 }
 
 const placeOrder=(async()=>{
+  isPlaceOrderDisabled.value = true;
 
  // Construct the order data
  const orderData = {
@@ -140,7 +143,6 @@ const placeOrder=(async()=>{
     });
 
     console.log('response when create order', response);
-
     // Handle the response
     if (response.success) {
       alertDialogTitle.value = "Success";
@@ -148,7 +150,7 @@ const placeOrder=(async()=>{
       isAlertDialogOpen.value = true;
       setTimeout(() => {
         this.$nuxt.refresh();
-      }, 3000);
+      }, 1000);
     }
   } catch (error) {
     console.log('error when create order', error);
@@ -156,7 +158,8 @@ const placeOrder=(async()=>{
     alertDialogTitle.value = "Error "
     alertDialogMessage.value = error.error
     isAlertDialogOpen.value = true
-
+  }  finally {
+    // isPlaceOrderDisabled.value = false;
   }
 })
 
@@ -420,7 +423,7 @@ const orderPreviewData= ref([
 
                 </VRow>
 
-                <VRow class="mt-5" v-if="storedAjeerOrders">
+                <VRow class="mt-5" v-if="storedAjeerOrders.length">
                   <VCol cols="12" md="12">
                     <VListItemTitle class="me-4">
                       <div class="d-flex flex-column">
@@ -579,7 +582,7 @@ const orderPreviewData= ref([
                 {{ $t("Previous") }}
               </VBtn>
 
-              <VBtn v-if="iconsSteps.length - 1 === currentStep" color="success" append-icon="tabler-check"
+              <VBtn v-if="iconsSteps.length - 1 === currentStep" color="success" append-icon="tabler-check" :disabled="isPlaceOrderDisabled"
                 @click="onSubmit">
                 {{ $t("Place Order") }}
               </VBtn>
