@@ -187,7 +187,6 @@ watch(() => formData.value.order, (newValue, oldValue) => {
   if(newValue && partnerOrders) {
     const updatedOrder = partnerOrders.value.find(order => order.id === newValue);
     selectedOrder.value = updatedOrder;
-    console.log('formData.order changed , updatedOrder.value is:', selectedOrder.value);
   }
 
   if(checkValueForValidation(formData.value.order)){
