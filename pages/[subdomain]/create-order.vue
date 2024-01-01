@@ -31,7 +31,9 @@ const orders = computed(() => {
 
 const refVForm = ref()
 const locationStore = useLocationStore()
-const i18n = useI18n()
+
+const { t, locale } = useI18n()
+const currentLocale = ref(locale.value)
 const fawriIcon = useGenerateImageVariant(fawriIconImage)
 const scheduledIcon = useGenerateImageVariant(scheduledIconImage)
 const center = ref(locationStore.getLocation);
@@ -45,25 +47,25 @@ const alertDialogMessage=ref('')
 
 const isPlaceOrderDisabled = ref(false);
 
-const iconsSteps = [
+const iconsSteps = computed(()=>[
   {
-    title: i18n.t('Order Details'),
+    title: t('Order Details'),
     icon: 'custom-address',
   },
   {
-    title: i18n.t("Choose Date"),
+    title: t("Choose Date"),
     icon: 'custom-wizard-social-link',
   },
   {
-    title: i18n.t('Address'),
+    title: t('Address'),
     icon: 'custom-wizard-address',
   },
   {
-    title: i18n.t('Review & Submit'),
+    title: t('Review & Submit'),
     icon: 'custom-wizard-submit',
   },
 
-]
+])
 
 const currentStep = ref(0)
 const isFawri = ref(true)
@@ -213,7 +215,10 @@ watch(() => formData.value.date, () => {
   }
 },{immediate:true})
 
-
+//watch locale
+watch(locale, (newLocale) => {
+  currentLocale.value = newLocale
+})
 
 const getAddressInString=(async(lat,lng)=>{
   console.log("lat",lat,"long",lng)
