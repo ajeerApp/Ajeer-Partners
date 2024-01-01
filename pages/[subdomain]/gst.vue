@@ -12,6 +12,7 @@ import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 import { getSubDomain } from '@/utils/sub-domain';
+import { useI18n } from 'vue-i18n'
 
 import { useAuth } from '~/stores/auth';
 import { ref, computed } from 'vue';
@@ -20,39 +21,39 @@ import { useRouter } from 'vue-router';
 definePageMeta({
   layout: 'blank',
 })
-
-const form = ref({
-  mobile: '789456123',
-})
-
+const { t, locale } = useI18n()
+const currentLocale = ref(locale.value)
 const refVForm = ref()
 const isPasswordVisible = ref(false)
-// const partner = useGenerateImageVariant(saudiCermics, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 const partner = useGenerateImageVariant(saudiCermics)
-const ajeerLogoBg = useGenerateImageVariant(ajeerLogo)
-// const api = useRuntimeConfig().public.apiBaseUrl+'/users'
-const config = useRuntimeConfig()
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
-
-const checkbox = ref(false);
+const responseStatus=ref(true)
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuth();
-const subDomain = getSubDomain();
+const isLoggedIn=ref(false)
+const mobile = ref(null);
 
-const mobile = ref("789456123");
-
+const errors = ref({
+  mobile: undefined,
+})
 // TODO, add front validation
 const login = async () => {
   console.log('submit login button clicked, and login function fired');
+  isLoggedIn.value=true
   try {
-    await authStore.login({
+   await authStore.login({
       mobile: mobile.value,
     });
     router.push(`create-order`);
-    console.log("route",route)
+    responseStatus.value=true
   } catch (error) {
-    console.error(error);
+    console.error("error error",error);
+  isLoggedIn.value=false
+  if (error.toString().includes('wrong data provided') || error.response.status === 400) {
+    errors.value.mobile=t("The mobile number entered is incorrect. Please try again");
+    } 
+
   }
 };
 
@@ -62,6 +63,16 @@ const onSubmit = () => {
       login()
   })
 }
+
+const isLoading=computed(()=>{
+return isLoggedIn.value
+})
+
+
+//watch locale
+watch(locale, (newLocale) => {
+  currentLocale.value = newLocale
+})
 
 </script>
 
@@ -150,15 +161,17 @@ const onSubmit = () => {
               <!-- mobile -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="form.mobile"
+                  v-model="mobile"
                   autofocus
                   :label="$t('Mobile')"
                   type="number"
                   placeholder="e.g 5xxxxxxxx"
                   :rules="[requiredValidator]"
+                  :error-messages="errors.mobile"
                 />
               </VCol>
 
+              
               <!-- password -->
               <VCol cols="12">
 
@@ -166,7 +179,7 @@ const onSubmit = () => {
                   block
                   type="submit"
                 >
-                  {{ $t("Check") }}
+                {{ isLoading ? $t("Logging in") + " ...": $t("Login") }}
                 </VBtn>
               </VCol>
 

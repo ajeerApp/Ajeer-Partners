@@ -103,7 +103,7 @@ export const useAuth = defineStore('auth', {
         }
       });
       const resData = response.data;
-      console.log('thi is login resData', resData);
+      console.log('response', response);
       if (response.success === true) {
         const userMappedData: AuthUser = {
           name: resData.user.user.first_name,

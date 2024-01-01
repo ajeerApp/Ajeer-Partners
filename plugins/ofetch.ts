@@ -31,7 +31,7 @@ export default defineNuxtPlugin(nuxtApp => {
             if (resData.success === true) {
                 console.log('Request success, ofetch plugin:', resData);
             } else {
-                throw new Error('Request failed, ofetch plugin');
+                throw new Error('wrong data provided to ajeer API client');
             }
         },
         async onResponseError({ request, response, options }) {
